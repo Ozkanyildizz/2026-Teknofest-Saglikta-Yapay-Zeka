@@ -1,0 +1,28 @@
+# PSR Aşaması - Büyük veri dosyaları
+PSR Aşaması/data/
+
+# Python önbellek dosyaları
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Ortam / sanal çevre
+.env
+.venv
+venv/
+env/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE / editör
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS dosyaları
+.DS_Store
+Thumbs.db

@@ -1,0 +1,2 @@
+https://zenodo.org/records/10813168 
+https://huggingface.co/datasets/songlab/clinvar
