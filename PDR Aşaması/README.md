@@ -234,7 +234,7 @@ Bu tablo, yeni bir versiyon tamamlandıkça güncellenecektir:
 
 | Versiyon | Geliştirici | Tarih | MASTER F1 | MCC | PR-AUC | Push? |
 |---|---|---|---|---|---|---|
-| V1 | Özkan | — | — | — | — | — |
+| **V1** | Özkan | Mayıs 2026 | **0.8711** | **0.5054** | **0.9207** | ✅ |
 | V2 | — | — | — | — | — | — |
 
 > Bu tabloyu her yeni versiyon tamamlandığında **PDR Aşaması/README.md**'ye ekleyiniz.
