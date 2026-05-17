@@ -1,4 +1,4 @@
-# V1 — Özkan — Mayıs 2026
+# V1 
 
 > İlk versiyon — Baseline model. Yarışma veri setinin keşfi ve ilk sonuçlar.
 

@@ -1,4 +1,4 @@
-# V2 — Cansu — Mayıs 2026
+# V2 
 
 > İkinci versiyon — preprocessing geliştirmeleri, missing indicator yaklaşımı ve karar eşiği optimizasyonu.
 
