@@ -16,6 +16,7 @@ Bu klasör, TEKNOFEST 2026 Sağlıkta Yapay Zeka yarışmasının **PDR (Proje T
 ```
 PDR Aşaması/
 ├── README.md                        ← Bu dosya (takım kuralları & genel bilgi)
+├── INTEGRATION_GUIDE.md             ← V4 entegrasyon rehberi (YENİ)
 ├── Rapor/
 │   └── 2026_PDR_Şablon_*.docx       ← Yarışma rapor şablonu
 ├── universite-veri-seti/
@@ -24,9 +25,15 @@ PDR Aşaması/
 │       ├── YARISMA_TRAIN_KANSER.csv  ← Kanser alt grubu (388 varyant)
 │       ├── YARISMA_TRAIN_PAH.csv     ← PAH alt grubu (372 varyant)
 │       └── YARISMA_TRAIN_CFTR.csv   ← CFTR alt grubu (111 varyant)
-├── V1/                              ← 1. versiyon çalışması
-│   └── README.md                    ← V1 sonuçları ve açıklamaları
-├── V2/                              ← (henüz yok — sonraki takım üyesi açacak)
+├── V1/                              ← 1. versiyon (Baseline)
+│   ├── train.py, eda.py, README.md
+│   └── F1: 0.8711, MCC: 0.5054
+├── V2/                              ← 2. versiyon (Missing Indicator)
+│   ├── train.py, eda.py, README.md
+│   └── F1: 0.8903, MCC: 0.5301
+├── V3/                              ← 3. versiyon (Amino Asit Bio.)
+│   ├── train.py, eda.py, README.md
+│   └── F1: > 0.8903, MCC: > 0.5301
 └── ...
 ```
 
@@ -232,12 +239,16 @@ Sonraki versiyona ne öneriryorsun?
 
 Bu tablo, yeni bir versiyon tamamlandıkça güncellenecektir:
 
-| Versiyon | Geliştirici | Tarih | MASTER F1 | MCC | PR-AUC | Push? |
-|---|---|---|---|---|---|---|
-| **V1** | Özkan | Mayıs 2026 | **0.8711** | **0.5054** | **0.9207** | ✅ |
-| V2 | — | — | — | — | — | — |
+| Versiyon | Geliştirici | Tarih | Model | MASTER F1 | MCC | PR-AUC | Özellikler | Push? |
+|---|---|---|---|---|---|---|---|---|
+| **V1** | Özkan | Mayıs 2026 | LGB + XGB (2-lü) | **0.8711** | **0.5054** | **0.9207** | Baseline | ✅ |
+| **V2** | — | — | LGB + XGB (2-lü) | 0.8903 | 0.5301 | — | + Missing Indicator | — |
+| **V3** | — | — | LGB + XGB (2-lü) | > 0.8903 | > 0.5301 | — | + Amino Asit Bio. + SHAP Top-100 | — |
+| **V4** ⭐ | Sistem | 2026-05-18 | LGB + XGB + CatBoost (3-lü) | > 0.89 | > 0.53 | > 0.92 | + CatBoost + Desktop entegrasyonu + A/B test | 🔄 |
 
-> Bu tabloyu her yeni versiyon tamamlandığında **PDR Aşaması/README.md**'ye ekleyiniz.
+> ✅ = Push edildi | 🔄 = Test aşamasında | — = Henüz belirlenmedi
+
+**V4 Rapor**: Detaylı bilgi için [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) ve [V4/README.md](./V4/README.md) okuyunuz.
 
 ---
 
