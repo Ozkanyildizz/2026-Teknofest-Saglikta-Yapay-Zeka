@@ -39,6 +39,17 @@ V3 analizlerinden elde edilen biyokimyasal bulgular doğrudan modele uygulanmı�
 - LightGBM için Optuna ile hiperparametre arayışı yapılmıştır.
 - Özellik sayısı Top-100'e düşürülerek karmaşıklık azaltılmıştır.
 
+### Hiperparametreler (Optuna Sonrası)
+```python
+LightGBM: n_estimators=800, lr=0.024, max_depth=9,
+          num_leaves=55, subsample=0.66, colsample_bytree=0.62,
+          reg_alpha=0.1, reg_lambda=1.0
+
+XGBoost:  n_estimators=800, lr=0.05, max_depth=5,
+          subsample=0.8, colsample_bytree=0.8,
+          reg_alpha=0.1, reg_lambda=1.0
+```
+
 ---
 
 ## Veri Ön İşleme Pipeline
@@ -74,6 +85,26 @@ SHAP hatası giderildikten sonra en çok katkı sağlayan 100 özellik ile model
 | **MCC** | **0.5401** |
 
 > Bu sayede çok daha az özellikle daha yüksek genelleme başarısı elde edilmiştir.
+
+## Confusion Matrix (CV üzerinden, Eşik=0.45)
+
+```text
+              Tahmin
+              Benign  Patojenik
+Gerçek Benign   412      370
+Gerçek Patojen  109     2040
+```
+
+- **FN = 109** (Klinik risk taşıyan kaçırılmış hastalar)
+- **FP = 370** (Gereksiz alarm verilen sağlıklı kişiler)
+
+> **Kazanım:** V2'de 120 olan FN (Yanlış Negatif) sayısı, V3'teki yeni özellikler ve Optuna ile **109'a düşürülmüştür**. Klinik açıdan bu çok değerli bir gelişmedir.
+
+---
+
+## Karar Eşiği Analizi
+
+V3 modelinde karar eşiği (threshold) analizi yapılmış ve en yüksek F1/MCC dengesini veren noktanın **0.45** olduğu saptanmıştır. Yeni eklenen biyokimyasal özellikler sayesinde modelin güven aralığı daha keskinleşmiş ve optimal eşik 0.40'tan 0.45'e yükselmiştir.
 
 ---
 
