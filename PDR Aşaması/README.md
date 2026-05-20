@@ -33,7 +33,13 @@ PDR Aşaması/
 │   └── F1: 0.8903, MCC: 0.5301
 ├── V3/                              ← 3. versiyon (Amino Asit Bio.)
 │   ├── train.py, eda.py, README.md
-│   └── F1: > 0.8903, MCC: > 0.5301
+│   └── F1: 0.8929, MCC: 0.5401
+├── V4/                              ← 4. versiyon (CatBoost Stacking)
+│   ├── train.py, eda.py, README.md
+│   └── F1: 0.8958, MCC: 0.5434
+├── V5/                              ← 5. versiyon (GPU Accelerated XGB)
+│   ├── train.py, eda.py, README.md
+│   └── F1: 0.8941, KANSER F1: 0.9069
 └── ...
 ```
 
@@ -241,12 +247,13 @@ Bu tablo, yeni bir versiyon tamamlandıkça güncellenecektir:
 
 | Versiyon | Geliştirici | Tarih | Model | MASTER F1 | MCC | PR-AUC | Özellikler | Push? |
 |---|---|---|---|---|---|---|---|---|
-| **V1** | Özkan | Mayıs 2026 | LGB + XGB (2-lü) | **0.8711** | **0.5054** | **0.9207** | Baseline | ✅ |
-| **V2** | — | — | LGB + XGB (2-lü) | 0.8903 | 0.5301 | — | + Missing Indicator | — |
-| **V3** | — | — | LGB + XGB (2-lü) | > 0.8903 | > 0.5301 | — | + Amino Asit Bio. + SHAP Top-100 | — |
-| **V4** ⭐ | Sistem | 2026-05-18 | LGB + XGB + CatBoost (3-lü) | > 0.89 | > 0.53 | > 0.92 | + CatBoost + Desktop entegrasyonu + A/B test | 🔄 |
+| **V1** | - | Mayıs 2026 | LGB + XGB (2-lü) | 0.8711 | 0.5054 | 0.9207 | Baseline | ✅ |
+| **V2** | - | Mayıs 2026 | LGB + XGB (2-lü) | 0.8903 | 0.5301 | 0.9206 | + Missing Indicator | ✅ |
+| **V3** | - | Mayıs 2026 | LGB + XGB (2-lü) | 0.8929 | 0.5401 | — | + Amino Asit Bio. + Optuna | ✅ |
+| **V4** | - | Mayıs 2026 | LGB+XGB+CatBoost | **0.8958** | **0.5434** | 0.9199 | + CatBoost Stacking + EK_ Interact | ✅ |
+| **V5** ⭐| - | Mayıs 2026 | LGB+XGB+CatBoost | 0.8941 | 0.5370 | **0.9222** | **Tam GPU Desteği**, XGB Optuna, KANSER F1: 0.9069 | 🔄 |
 
-> ✅ = Push edildi | 🔄 = Test aşamasında | — = Henüz belirlenmedi
+> ✅ = Push edildi | 🔄 = Beklemede | — = Henüz belirlenmedi
 
 **V4 Rapor**: Detaylı bilgi için [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) ve [V4/README.md](./V4/README.md) okuyunuz.
 
