@@ -262,7 +262,7 @@ Bu tablo, yeni bir versiyon tamamlandıkça güncellenecektir:
 ## 🛠️ Gereksinimler
 
 ```bash
-pip install rewuirements.txt
+pip install requirements.txt
 ```
 
 | Kütüphane | Kullanım |
