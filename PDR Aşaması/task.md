@@ -19,9 +19,10 @@ Funda'nın bilgisayarı V5 mimarisinin sınırlarını zorlamak ve sınıf denge
 
 ## 🧬 3. Özkan — Veri Bükme (Feature Engineering) ve Unsupervised Learning
 Dış veri kullanımı (ClinVar/gnomAD) yarışma kuralları gereği riskli olduğundan, tamamen elimizdeki kapalı veriyi matematiksel olarak zenginleştirmeye odaklanacak.
-- [ ] V3'te yapılan Amino Asit biyokimyasal çevirilerini derinleştirmek (Örneğin: Amino asidin esnekliği, hacmi, hidrofobik indeks skorları).
-- [ ] Gözetimsiz Öğrenme (Unsupervised Learning) teknikleri kullanmak: K-Means ile hastaları kümeleyip bu küme numaralarını (Cluster ID) modele yeni bir sütun olarak vermek.
-- [ ] Sayısal (AL_ ve EK_) sütunlar arasında matematiksel etkileşimler (Feature Interactions) yaratmak (Örn: EK_7 x AL_327) veya PCA (Temel Bileşen Analizi) ile yeni boyutlar üretmek.
+- [x] V3'te yapılan Amino Asit biyokimyasal çevirilerini derinleştirmek (Örneğin: Amino asidin esnekliği, hacmi, hidrofobik indeks skorları).
+- [x] Gözetimsiz Öğrenme (Unsupervised Learning) teknikleri kullanmak: K-Means ile hastaları kümeleyip bu küme numaralarını (Cluster ID) modele yeni bir sütun olarak vermek.
+- [x] Sayısal (AL_ ve EK_) sütunlar arasında matematiksel etkileşimler (Feature Interactions) yaratmak (Örn: EK_7 x AL_327) veya PCA (Temel Bileşen Analizi) ile yeni boyutlar üretmek.
+> **Not:** Özkan'ın görevleri başarıyla tamamlanmış ve tüm bu özellikler "V6" modeli altında rekor kırarak GitHub'a eklenmiştir (F1: 0.8965, MCC: 0.5563).
 
 ## 🔍 4. Cansu — "False Negative" Hata Analizi ve Klinik Yorumlama
 Sistemin gözden kaçırdığı patojenik (hasta) vakalara odaklanarak modelin kör noktalarını tespit edecek.
