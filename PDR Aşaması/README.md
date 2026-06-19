@@ -40,6 +40,9 @@ PDR Aşaması/
 ├── V5/                              ← 5. versiyon (GPU Accelerated XGB)
 │   ├── train.py, eda.py, README.md
 │   └── F1: 0.8941, KANSER F1: 0.9069
+├── V6(L)/                           ← 6. versiyon (Sızıntısız CV + Derin AA)
+│   ├── train.py, README.md
+│   └── F1: 0.8919, MCC: 0.5450 (Gerçekçi Skor)
 └── ...
 ```
 
@@ -252,7 +255,7 @@ Bu tablo, yeni bir versiyon tamamlandıkça güncellenecektir:
 | **V3** | - | Mayıs 2026 | LGB + XGB (2-lü) | 0.8929 | 0.5401 | — | + Amino Asit Bio. + Optuna | ✅ |
 | **V4** | - | Mayıs 2026 | LGB+XGB+CatBoost | 0.8958 | 0.5434 | 0.9199 | + CatBoost Stacking + EK_ Interact | ✅ |
 | **V5** | - | Mayıs 2026 | LGB+XGB+CatBoost | 0.8941 | 0.5370 | 0.9222 | **Tam GPU Desteği**, XGB Optuna, KANSER F1: 0.9069 | ✅ |
-| **V6** ⭐| Özkan | Haziran 2026 | LGB+XGB+CatBoost | **0.8965** | **0.5563** | **0.9257** | **Derin AA, PCA, K-Means**, f1-optimal eşik | ✅ |
+| **V6(L)** ⭐| Özkan | Haziran 2026 | LGB+XGB+CatBoost | **0.8919** | **0.5450** | **0.9116** | **Sızıntısız CV**, Tam Grantham, SHAP | ✅ |
 
 > ✅ = Push edildi | 🔄 = Beklemede | — = Henüz belirlenmedi
 

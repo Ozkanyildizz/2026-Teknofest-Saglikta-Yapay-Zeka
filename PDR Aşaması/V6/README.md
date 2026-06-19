@@ -1,6 +1,6 @@
-# V6 — BLOSUM + Grantham + SHAP Top-100 + LGBM Meta-Learner
+# V6(L) — Sızıntısız (Leak-Free) Pipeline + Tam Grantham Matrisi + SHAP Top-100 + LGBM Meta-Learner
 
-> Altıncı versiyon — V5 GPU mimarisinin üzerine domain özellikleri, özellik seçimi ve meta-learner iyileştirmeleri.
+> Altıncı versiyon — Kod incelemesi sonrası tespit edilen Veri Sızıntısı (Data Leakage) sorunları giderilmiş, tam Grantham matrisi eklenmiş gerçek dünya performansını yansıtan yasal ve temizlenmiş (Leak-Free) versiyondur.
 
 ---
 
@@ -8,13 +8,13 @@
 
 V6, V4'ün MASTER skorunu (F1: 0.8958) geçmek için odaklı iyileştirmeler içerir:
 
-- **BLOSUM62** substitution skoru + **Grantham mesafesi** (yeni AA özellikleri)
-- **AL blok eksiklik** özellikleri (AL_27–38 bloğu ayrı izlenir)
-- **SHAP Top-100** özellik seçimi (V3'teki başarı geri getirildi)
-- **passthrough=True** + sığ **LGBM meta-learner** (LogisticRegression yerine)
-- **MCC-optimal** karar eşiği
-- Alt gruplar için **ayrı 5-fold CV** değerlendirmesi
-- Tam **GPU** desteği (LightGBM + XGBoost + CatBoost)
+- **Veri Sızıntısı Çözüldü**: PCA, K-Means ve SHAP Feature Selection adımları artık 5-Fold CV döngüsünün *içine* gömülerek Validation verisinin Train aşamasına sızması engellendi.
+- **Tam Grantham Matrisi**: Tüm 400 kombinasyonu barındıran tam radikallik mesafe matrisi (0-215) entegre edildi.
+- **BLOSUM62** substitution skoru + biyokimyasal özellik farkları.
+- **AL blok eksiklik** özellikleri eklendi.
+- **SHAP Top-100** özellik seçimi (Her fold'un kendi eğitim setine özel).
+- **passthrough=True** + sığ **LGBM meta-learner** (LogisticRegression düzeltildi).
+- Tam **GPU** desteği (LightGBM + XGBoost + CatBoost).
 
 ---
 
@@ -42,9 +42,12 @@ StackingClassifier (passthrough=True)
 
 ### Özellik Seçimi
 
-1. Tüm özellikler ön işlenir (~400+)
-2. LightGBM probe modeli ile SHAP hesaplanır
-3. Top-100 özellik stacking'e verilir
+1. 5-Fold Custom CV başlar. Her fold için `X_tr` ve `X_val` ayrılır.
+2. `X_tr` üzerinden Imputer ve Scaler `fit` edilir.
+3. K-Means ve PCA *sadece* `X_tr` kullanılarak eğitilir.
+4. LightGBM probe modeli `X_tr` ile eğitilip SHAP hesaplanır. Top-100 özellik belirlenir.
+5. Sadece bu 100 özellik kullanılarak Stacking Ensemble `fit` edilir.
+6. `X_val` üzerinde `predict_proba` alınır. Her fold bittiğinde gerçekçi yansıma elde edilir.
 
 ---
 
@@ -54,15 +57,17 @@ StackingClassifier (passthrough=True)
 
 | Metrik | Değer |
 |---|---|
-| F1 Skoru | **0.8965** |
-| MCC | **0.5563** |
-| PR-AUC | **0.9257** |
-| ROC-AUC | **0.8534** |
-| FN | 100 (Eşik: 0.46) |
+| F1 Skoru | **0.8919** |
+| MCC | **0.5450** |
+| PR-AUC | **0.9116** |
+| ROC-AUC | **0.8377** |
+| FN | 135 (Eşik: 0.51) |
+
+> **Not:** Data Leakage düzeltildiği için görünürdeki skorlar bir önceki sızıntılı V6'ya (0.8965) göre doğal olarak düşmüştür. Ancak V4'e kıyasla MCC'de iyileşme sağlanmıştır ve bu skor gerçek, savunulabilir yasal skordur.
 
 ### Alt Grup Sonuçları (Ayrı CV)
 
-*(Alt grup CV bu turda atlandı)*
+*(Sızıntı engelleme testleri Master üzerinde yapıldığından alt gruplar bu koşuda atlandı)*
 
 | Grup | F1 | MCC | PR-AUC | FN |
 |---|---|---|---|---|
@@ -74,12 +79,12 @@ StackingClassifier (passthrough=True)
 
 ## Önceki Versiyonla Karşılaştırma
 
-| Metrik | V4 | V5 | V6 |
+| Metrik | V4 | V5 | V6(Leak-Free) |
 |---|---|---|---|
-| MASTER F1 | 0.8958 | 0.8941 | **0.8965** (+0.0007) |
-| MASTER MCC | 0.5434 | 0.5370 | **0.5563** (+0.0129) |
-| MASTER PR-AUC | 0.9199 | 0.9222 | **0.9257** (+0.0058) |
-| MASTER ROC-AUC | 0.8451 | 0.8440 | **0.8534** (+0.0083) |
+| MASTER F1 | 0.8958 | 0.8941 | **0.8919** (-0.0039) |
+| MASTER MCC | 0.5434 | 0.5370 | **0.5450** (+0.0016) |
+| MASTER PR-AUC | 0.9199 | 0.9222 | **0.9116** (-0.0083) |
+| MASTER ROC-AUC | 0.8451 | 0.8440 | **0.8377** (-0.0074) |
 
 ---
 
