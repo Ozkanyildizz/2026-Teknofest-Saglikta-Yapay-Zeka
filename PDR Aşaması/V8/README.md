@@ -165,26 +165,5 @@ dosyasına kaydedilmektedir.
 
 ---
 
-## Versiyon Geçmişi
 
-| Versiyon | Yenilik                                      |
-| -------- | -------------------------------------------- |
-| V1       | Baseline model                               |
-| V2       | Missing indicator ve threshold optimizasyonu |
-| V3       | Biyokimyasal AA özellikleri + Optuna         |
-| V4       | CatBoost Stacking + EK etkileşimleri         |
-| V5       | GPU destekli deneyler                        |
-| V6       | False Negative odaklı risk özellikleri       |
-
----
-
-## Gelecek Çalışmalar
-
-* SHAP tabanlı yeni özellik seçimi
-* FN azaltmaya yönelik maliyet duyarlı öğrenme
-* Soft voting ve weighted stacking denemeleri
-* LightGBM GPU desteği
-* Daha kapsamlı Optuna optimizasyonu
-
----
 
