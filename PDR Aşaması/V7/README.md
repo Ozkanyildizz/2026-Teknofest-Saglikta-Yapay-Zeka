@@ -253,7 +253,7 @@ USE_GPU         = True
 ## GitHub'a Pushlandı mı?
 
 - [x] Eğitim tamamlandı ✅
-- [ ] Sonuçlar değerlendirildi, push bekliyor
+- [x] GitHub'a pushlandı ✅
 
 ### Commit mesajı:
 ```
