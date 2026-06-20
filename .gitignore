@@ -26,3 +26,8 @@ env/
 # OS dosyaları
 .DS_Store
 Thumbs.db
+
+# Optuna ve CatBoost geçici dosyaları (büyük, yeniden üretilebilir)
+*.db
+catboost_info/
+test_optuna.db
