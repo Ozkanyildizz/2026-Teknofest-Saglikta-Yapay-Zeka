@@ -141,52 +141,129 @@ V5_BEST_XGB_PARAMS = {
     'scale_pos_weight': 0.4775383149015521,
 }
 
-# Amino asit biyokimyasal özellik sözlüğü (V3'ten, V5'te değişmeden korunmuştur)
+# ─── BLOSUM62 MATRİSİ (V6'dan — Standart PAM/BLOSUM literatürü) ─────────────
+_AA_ORDER = 'ARNDCQEGHILKMFPSTWYV'
+_BLOSUM62_RAW = [
+    [ 4,-1,-2,-2, 0,-1,-1, 0,-2,-1,-1,-1,-1,-2,-1, 1, 0,-3,-2, 0],
+    [-1, 5, 0,-2,-3, 1, 0,-2, 0,-3,-2, 2,-1,-3,-2,-1,-1,-3,-2,-3],
+    [-2, 0, 6, 1,-3, 0, 0, 0, 1,-3,-3, 0,-2,-3,-2, 1, 0,-4,-2,-3],
+    [-2,-2, 1, 6,-3, 0, 2,-1,-1,-3,-4,-1,-3,-3,-1, 0,-1,-4,-3,-3],
+    [ 0,-3,-3,-3, 9,-3,-4,-3,-3,-1,-1,-3,-1,-2,-3,-1,-1,-2,-2,-1],
+    [-1, 1, 0, 0,-3, 5, 2,-2, 0,-3,-2, 1, 0,-3,-1, 0,-1,-2,-1,-2],
+    [-1, 0, 0, 2,-4, 2, 5,-2, 0,-3,-3, 1,-2,-3,-1, 0,-1,-3,-2,-2],
+    [ 0,-2, 0,-1,-3,-2,-2, 6,-2,-4,-4,-2,-3,-3,-2, 0,-2,-2,-3,-3],
+    [-2, 0, 1,-1,-3, 0, 0,-2, 8,-3,-3,-1,-2,-1,-2,-1,-2,-2, 2,-3],
+    [-1,-3,-3,-3,-1,-3,-3,-4,-3, 4, 2,-3, 1, 0,-3,-2,-1,-3,-1, 3],
+    [-1,-2,-3,-4,-1,-2,-3,-4,-3, 2, 4,-2, 2, 0,-3,-2,-1,-2,-1, 1],
+    [-1, 2, 0,-1,-3, 1, 1,-2,-1,-3,-2, 5,-1,-3,-1, 0,-1,-3,-2,-2],
+    [-1,-1,-2,-3,-1, 0,-2,-3,-2, 1, 2,-1, 5, 0,-2,-1,-1,-1,-1, 1],
+    [-2,-3,-3,-3,-2,-3,-3,-3,-1, 0, 0,-3, 0, 6,-4,-2,-2, 1, 3,-1],
+    [-1,-2,-2,-1,-3,-1,-1,-2,-2,-3,-3,-1,-2,-4, 7,-1,-1,-4,-3,-2],
+    [ 1,-1, 1, 0,-1, 0, 0, 0,-1,-2,-2, 0,-1,-2,-1, 4, 1,-3,-2,-2],
+    [ 0,-1, 0,-1,-1,-1,-1,-2,-2,-1,-1,-1,-1,-2,-1, 1, 5,-2,-2, 0],
+    [-3,-3,-4,-4,-2,-2,-3,-2,-2,-3,-2,-3,-1, 1,-4,-3,-2,11, 2,-3],
+    [-2,-2,-2,-3,-2,-1,-2,-3, 2,-1,-1,-2,-1, 3,-3,-2,-2, 2, 7,-1],
+    [ 0,-3,-3,-3,-1,-2,-2,-3,-3, 3, 1,-2, 1,-1,-2,-2, 0,-3,-1, 4],
+]
+BLOSUM62 = {}
+for _i, _a in enumerate(_AA_ORDER):
+    for _j, _b in enumerate(_AA_ORDER):
+        BLOSUM62[(_a, _b)] = _BLOSUM62_RAW[_i][_j]
+
+# ─── TAM GRANTHAM MESAFESİ MATRİSİ (V6'dan) ─────────────────────────────────
+# Değer aralığı: 0 (Aynı AA) → 215 (C→W, en radikal değişim).
+_GRANTHAM_DATA = {
+    'A': {'A':  0,'R':112,'N':111,'D':126,'C':195,'Q': 91,'E':107,'G': 60,'H': 86,'I': 94,'L': 96,'K':106,'M': 84,'F':113,'P': 27,'S': 99,'T': 58,'W':148,'Y':112,'V': 64},
+    'R': {'A':112,'R':  0,'N': 86,'D': 96,'C':180,'Q': 43,'E': 54,'G':125,'H': 29,'I': 97,'L':102,'K': 26,'M': 91,'F': 97,'P':103,'S':110,'T': 71,'W':101,'Y': 77,'V': 96},
+    'N': {'A':111,'R': 86,'N':  0,'D': 23,'C':139,'Q': 46,'E': 42,'G': 80,'H': 68,'I':149,'L':153,'K': 94,'M':142,'F':158,'P': 91,'S': 46,'T': 65,'W':174,'Y':143,'V':133},
+    'D': {'A':126,'R': 96,'N': 23,'D':  0,'C':154,'Q': 61,'E': 45,'G': 94,'H': 81,'I':168,'L':172,'K':101,'M':160,'F':177,'P':108,'S': 65,'T': 85,'W':181,'Y':160,'V':152},
+    'C': {'A':195,'R':180,'N':139,'D':154,'C':  0,'Q':154,'E':170,'G':159,'H':174,'I':198,'L':198,'K':202,'M':196,'F':205,'P':169,'S':112,'T':149,'W':215,'Y':194,'V':192},
+    'Q': {'A': 91,'R': 43,'N': 46,'D': 61,'C':154,'Q':  0,'E': 29,'G': 87,'H': 24,'I':134,'L':130,'K': 53,'M':101,'F':116,'P': 76,'S': 68,'T': 42,'W':130,'Y': 99,'V':109},
+    'E': {'A':107,'R': 54,'N': 42,'D': 45,'C':170,'Q': 29,'E':  0,'G': 98,'H': 40,'I':134,'L':138,'K': 56,'M':126,'F':140,'P': 93,'S': 80,'T': 65,'W':152,'Y':122,'V':121},
+    'G': {'A': 60,'R':125,'N': 80,'D': 94,'C':159,'Q': 87,'E': 98,'G':  0,'H': 98,'I':135,'L':138,'K':127,'M':127,'F':153,'P': 42,'S': 56,'T': 59,'W':184,'Y':147,'V':109},
+    'H': {'A': 86,'R': 29,'N': 68,'D': 81,'C':174,'Q': 24,'E': 40,'G': 98,'H':  0,'I': 94,'L': 99,'K': 32,'M': 87,'F':100,'P': 77,'S': 89,'T': 47,'W':115,'Y': 83,'V': 90},
+    'I': {'A': 94,'R': 97,'N':149,'D':168,'C':198,'Q':134,'E':134,'G':135,'H': 94,'I':  0,'L':  5,'K':102,'M': 10,'F': 21,'P': 95,'S':142,'T': 89,'W': 61,'Y': 33,'V': 29},
+    'L': {'A': 96,'R':102,'N':153,'D':172,'C':198,'Q':130,'E':138,'G':138,'H': 99,'I':  5,'L':  0,'K':107,'M': 15,'F': 22,'P': 98,'S':145,'T': 92,'W': 61,'Y': 36,'V': 32},
+    'K': {'A':106,'R': 26,'N': 94,'D':101,'C':202,'Q': 53,'E': 56,'G':127,'H': 32,'I':102,'L':107,'K':  0,'M': 95,'F':102,'P':103,'S':121,'T': 78,'W':110,'Y': 85,'V': 97},
+    'M': {'A': 84,'R': 91,'N':142,'D':160,'C':196,'Q':101,'E':126,'G':127,'H': 87,'I': 10,'L': 15,'K': 95,'M':  0,'F': 28,'P': 87,'S':135,'T': 81,'W': 67,'Y': 36,'V': 21},
+    'F': {'A':113,'R': 97,'N':158,'D':177,'C':205,'Q':116,'E':140,'G':153,'H':100,'I': 21,'L': 22,'K':102,'M': 28,'F':  0,'P':114,'S':155,'T':103,'W': 40,'Y': 22,'V': 50},
+    'P': {'A': 27,'R':103,'N': 91,'D':108,'C':169,'Q': 76,'E': 93,'G': 42,'H': 77,'I': 95,'L': 98,'K':103,'M': 87,'F':114,'P':  0,'S': 74,'T': 38,'W':147,'Y':110,'V': 68},
+    'S': {'A': 99,'R':110,'N': 46,'D': 65,'C':112,'Q': 68,'E': 80,'G': 56,'H': 89,'I':142,'L':145,'K':121,'M':135,'F':155,'P': 74,'S':  0,'T': 42,'W':177,'Y':144,'V':124},
+    'T': {'A': 58,'R': 71,'N': 65,'D': 85,'C':149,'Q': 42,'E': 65,'G': 59,'H': 47,'I': 89,'L': 92,'K': 78,'M': 81,'F':103,'P': 38,'S': 42,'T':  0,'W':128,'Y': 92,'V': 69},
+    'W': {'A':148,'R':101,'N':174,'D':181,'C':215,'Q':130,'E':152,'G':184,'H':115,'I': 61,'L': 61,'K':110,'M': 67,'F': 40,'P':147,'S':177,'T':128,'W':  0,'Y': 37,'V': 88},
+    'Y': {'A':112,'R': 77,'N':143,'D':160,'C':194,'Q': 99,'E':122,'G':147,'H': 83,'I': 33,'L': 36,'K': 85,'M': 36,'F': 22,'P':110,'S':144,'T': 92,'W': 37,'Y':  0,'V': 55},
+    'V': {'A': 64,'R': 96,'N':133,'D':152,'C':192,'Q':109,'E':121,'G':109,'H': 90,'I': 29,'L': 32,'K': 97,'M': 21,'F': 50,'P': 68,'S':124,'T': 69,'W': 88,'Y': 55,'V':  0},
+}
+
+def get_grantham(aa1, aa2):
+    """İki amino asit arasındaki Grantham (biyokimyasal radikallik) mesafesini döndürür."""
+    if pd.isna(aa1) or pd.isna(aa2) or aa1 not in _GRANTHAM_DATA or aa2 not in _GRANTHAM_DATA:
+        return np.nan
+    return _GRANTHAM_DATA[aa1].get(aa2, np.nan)
+
+# ─── BİYOKİMYASAL ÖZELLİK SÖZLÜĞÜ (V9: V6 seviyesine yükseltildi) ──────────
+# 8 özellik: polarity, charge, hydropathy, weight, volume, flexibility,
+# aromatic, blosum62 — rapor Tablo 3 ve Şekil 1 (SHAP) ile tam uyumludur.
 AA_PROPERTIES = {
-    'A': {'polarity': 0, 'charge':  0, 'hydropathy':  1.8, 'weight':  89.1},
-    'R': {'polarity': 1, 'charge':  1, 'hydropathy': -4.5, 'weight': 174.2},
-    'N': {'polarity': 1, 'charge':  0, 'hydropathy': -3.5, 'weight': 132.1},
-    'D': {'polarity': 1, 'charge': -1, 'hydropathy': -3.5, 'weight': 133.1},
-    'C': {'polarity': 0, 'charge':  0, 'hydropathy':  2.5, 'weight': 121.2},
-    'E': {'polarity': 1, 'charge': -1, 'hydropathy': -3.5, 'weight': 147.1},
-    'Q': {'polarity': 1, 'charge':  0, 'hydropathy': -3.5, 'weight': 146.2},
-    'G': {'polarity': 0, 'charge':  0, 'hydropathy': -0.4, 'weight':  75.1},
-    'H': {'polarity': 1, 'charge':  1, 'hydropathy': -3.2, 'weight': 155.2},
-    'I': {'polarity': 0, 'charge':  0, 'hydropathy':  4.5, 'weight': 131.2},
-    'L': {'polarity': 0, 'charge':  0, 'hydropathy':  3.8, 'weight': 131.2},
-    'K': {'polarity': 1, 'charge':  1, 'hydropathy': -3.9, 'weight': 146.2},
-    'M': {'polarity': 0, 'charge':  0, 'hydropathy':  1.9, 'weight': 149.2},
-    'F': {'polarity': 0, 'charge':  0, 'hydropathy':  2.8, 'weight': 165.2},
-    'P': {'polarity': 0, 'charge':  0, 'hydropathy': -1.6, 'weight': 115.1},
-    'S': {'polarity': 1, 'charge':  0, 'hydropathy': -0.8, 'weight': 105.1},
-    'T': {'polarity': 1, 'charge':  0, 'hydropathy': -0.7, 'weight': 119.1},
-    'W': {'polarity': 0, 'charge':  0, 'hydropathy': -0.9, 'weight': 204.2},
-    'Y': {'polarity': 1, 'charge':  0, 'hydropathy': -1.3, 'weight': 181.2},
-    'V': {'polarity': 0, 'charge':  0, 'hydropathy':  4.2, 'weight': 117.1},
+    'A': {'polarity': 0, 'charge':  0, 'hydropathy':  1.8, 'weight':  89.1, 'volume':  88.6, 'flexibility': 0.360, 'aromatic': 0, 'blosum62':  4},
+    'R': {'polarity': 1, 'charge':  1, 'hydropathy': -4.5, 'weight': 174.2, 'volume': 173.4, 'flexibility': 0.530, 'aromatic': 0, 'blosum62':  5},
+    'N': {'polarity': 1, 'charge':  0, 'hydropathy': -3.5, 'weight': 132.1, 'volume': 114.1, 'flexibility': 0.460, 'aromatic': 0, 'blosum62':  6},
+    'D': {'polarity': 1, 'charge': -1, 'hydropathy': -3.5, 'weight': 133.1, 'volume': 111.1, 'flexibility': 0.510, 'aromatic': 0, 'blosum62':  6},
+    'C': {'polarity': 0, 'charge':  0, 'hydropathy':  2.5, 'weight': 121.2, 'volume': 108.5, 'flexibility': 0.350, 'aromatic': 0, 'blosum62':  9},
+    'E': {'polarity': 1, 'charge': -1, 'hydropathy': -3.5, 'weight': 147.1, 'volume': 138.4, 'flexibility': 0.500, 'aromatic': 0, 'blosum62':  5},
+    'Q': {'polarity': 1, 'charge':  0, 'hydropathy': -3.5, 'weight': 146.2, 'volume': 143.8, 'flexibility': 0.490, 'aromatic': 0, 'blosum62':  5},
+    'G': {'polarity': 0, 'charge':  0, 'hydropathy': -0.4, 'weight':  75.1, 'volume':  60.1, 'flexibility': 0.540, 'aromatic': 0, 'blosum62':  6},
+    'H': {'polarity': 1, 'charge':  1, 'hydropathy': -3.2, 'weight': 155.2, 'volume': 153.2, 'flexibility': 0.320, 'aromatic': 1, 'blosum62':  8},
+    'I': {'polarity': 0, 'charge':  0, 'hydropathy':  4.5, 'weight': 131.2, 'volume': 166.7, 'flexibility': 0.300, 'aromatic': 0, 'blosum62':  4},
+    'L': {'polarity': 0, 'charge':  0, 'hydropathy':  3.8, 'weight': 131.2, 'volume': 166.7, 'flexibility': 0.400, 'aromatic': 0, 'blosum62':  4},
+    'K': {'polarity': 1, 'charge':  1, 'hydropathy': -3.9, 'weight': 146.2, 'volume': 168.6, 'flexibility': 0.470, 'aromatic': 0, 'blosum62':  5},
+    'M': {'polarity': 0, 'charge':  0, 'hydropathy':  1.9, 'weight': 149.2, 'volume': 162.9, 'flexibility': 0.300, 'aromatic': 0, 'blosum62':  5},
+    'F': {'polarity': 0, 'charge':  0, 'hydropathy':  2.8, 'weight': 165.2, 'volume': 189.9, 'flexibility': 0.310, 'aromatic': 1, 'blosum62':  6},
+    'P': {'polarity': 0, 'charge':  0, 'hydropathy': -1.6, 'weight': 115.1, 'volume': 112.7, 'flexibility': 0.510, 'aromatic': 0, 'blosum62':  7},
+    'S': {'polarity': 1, 'charge':  0, 'hydropathy': -0.8, 'weight': 105.1, 'volume':  89.0, 'flexibility': 0.510, 'aromatic': 0, 'blosum62':  4},
+    'T': {'polarity': 1, 'charge':  0, 'hydropathy': -0.7, 'weight': 119.1, 'volume': 116.1, 'flexibility': 0.440, 'aromatic': 0, 'blosum62':  5},
+    'W': {'polarity': 0, 'charge':  0, 'hydropathy': -0.9, 'weight': 204.2, 'volume': 227.8, 'flexibility': 0.310, 'aromatic': 1, 'blosum62': 11},
+    'Y': {'polarity': 1, 'charge':  0, 'hydropathy': -1.3, 'weight': 181.2, 'volume': 193.6, 'flexibility': 0.420, 'aromatic': 1, 'blosum62':  7},
+    'V': {'polarity': 0, 'charge':  0, 'hydropathy':  4.2, 'weight': 117.1, 'volume': 140.0, 'flexibility': 0.390, 'aromatic': 0, 'blosum62':  4},
 }
 
 
 # ─── YARDIMCI FONKSİYONLAR (V5'ten aynen alınmıştır) ───────────────────────
 
 def extract_aa_features(df):
-    """AA_1 ve AA_2 sütunlarından biyokimyasal sayısal özellikler hesaplanır (V3'ten, V5'te değişmeden korunmuştur)."""
+    """
+    AA_1 ve AA_2 sütunlarından derinleştirilmiş biyokimyasal özellikler hesaplanır.
+    V9: V6 seviyesine yükseltildi — 8 özellik x 2 AA + Grantham mesafesi + BLOSUM62
+    türevleri + fark özellikleri. Rapor Tablo 3 ve Şekil 1 (SHAP) ile tam uyumludur.
+    """
     df = df.copy()
+    props = ['polarity', 'charge', 'hydropathy', 'weight', 'volume', 'flexibility', 'aromatic', 'blosum62']
     for aa_col, prefix in [('AA_1', 'AA1'), ('AA_2', 'AA2')]:
-        df[f'{prefix}_polarity'] = df[aa_col].map(
-            lambda x: AA_PROPERTIES.get(x, {}).get('polarity', np.nan))
-        df[f'{prefix}_charge']   = df[aa_col].map(
-            lambda x: AA_PROPERTIES.get(x, {}).get('charge', np.nan))
-        df[f'{prefix}_hydro']    = df[aa_col].map(
-            lambda x: AA_PROPERTIES.get(x, {}).get('hydropathy', np.nan))
-        df[f'{prefix}_weight']   = df[aa_col].map(
-            lambda x: AA_PROPERTIES.get(x, {}).get('weight', np.nan))
+        for prop in props:
+            df[f'{prefix}_{prop}'] = df[aa_col].map(
+                lambda x, p=prop: AA_PROPERTIES.get(x, {}).get(p, np.nan))
 
-    df['AA_hydro_diff']      = abs(df['AA1_hydro']  - df['AA2_hydro'])
-    df['AA_weight_diff']     = abs(df['AA1_weight'] - df['AA2_weight'])
+    # Grantham mesafesi (evrimsel radikallik — rapor SHAP Şekil 1'in 1. sırası)
+    df['AA_grantham_dist']   = df.apply(
+        lambda row: get_grantham(row['AA_1'], row['AA_2']), axis=1)
+
+    # Fark ve değişim özellikleri
+    df['AA_hydro_diff']      = abs(df['AA1_hydropathy'] - df['AA2_hydropathy'])
+    df['AA_weight_diff']     = abs(df['AA1_weight']     - df['AA2_weight'])
+    df['AA_volume_diff']     = abs(df['AA1_volume']     - df['AA2_volume'])
+    df['AA_flex_diff']       = abs(df['AA1_flexibility'] - df['AA2_flexibility'])
     df['AA_charge_change']   = (df['AA1_charge']   != df['AA2_charge']).astype(float)
     df['AA_polarity_change'] = (df['AA1_polarity'] != df['AA2_polarity']).astype(float)
-    df.loc[df['AA1_charge'].isna() | df['AA2_charge'].isna(), 'AA_charge_change'] = np.nan
+    df['AA_aromatic_change'] = (df['AA1_aromatic'] != df['AA2_aromatic']).astype(float)
+
+    # BLOSUM62 türevleri (evrimsel kabul edilebilirlik — rapor SHAP Şekil 1'in 2. sırası)
+    df['AA_blosum_sum']      = df['AA1_blosum62'] + df['AA2_blosum62']
+    df['AA_blosum_min']      = df[['AA1_blosum62', 'AA2_blosum62']].min(axis=1)
+
+    # Eksik değer durumlarında NaN güvencesi
+    df.loc[df['AA1_charge'].isna()   | df['AA2_charge'].isna(),   'AA_charge_change']   = np.nan
     df.loc[df['AA1_polarity'].isna() | df['AA2_polarity'].isna(), 'AA_polarity_change'] = np.nan
+    df.loc[df['AA1_aromatic'].isna() | df['AA2_aromatic'].isna(), 'AA_aromatic_change'] = np.nan
     return df
 
 
@@ -212,15 +289,39 @@ def add_missing_pattern_features(df, al_cols, ek_cols):
     return df
 
 
+def add_cat_interaction_features(df, cat_interaction_cols):
+    """
+    CAT_ sütunları arasında sayısal etkileşim terimleri üretilir (V9 — Rapor Bölüm 4.4).
+    Kategorik değerler integer koda çevrilip ikili çarpım alınır.
+    pd.Categorical tutarlı kodlama sağlar; NaN değerleri korunur.
+    """
+    df = df.copy()
+    encoded = {}
+    for col in cat_interaction_cols:
+        if col in df.columns:
+            codes = pd.Categorical(df[col]).codes.astype(float)
+            codes[codes == -1] = np.nan  # Eksik değerleri NaN yap
+            encoded[col] = codes
+
+    for a, b in combinations(cat_interaction_cols, 2):
+        if a in encoded and b in encoded:
+            df[f'{a}_x_{b}'] = encoded[a] * encoded[b]
+    return df
+
+
 def find_best_threshold(y_true, y_prob, step=0.01):
-    """F1 skorunu en üst düzeye çıkaran karar eşiği belirlenir (V5'ten değişmeden alınmıştır)."""
-    best_f1, best_thresh = 0.0, 0.5
+    """
+    MCC'yi (Matthews Korelasyon Katsayısı) en üst düzeye çıkaran karar eşiği belirlenir.
+    V9: F1'den MCC'ye çevrildi — raporun 'MCC maksimizasyonu ölçütüyle eşik=0.20'
+    ifadesiyle tam uyumludur.
+    """
+    best_score, best_thresh = -1.0, 0.5
     for thresh in np.arange(0.20, 0.71, step):
-        yp  = (y_prob >= thresh).astype(int)
-        f1t = f1_score(y_true, yp, zero_division=0)
-        if f1t > best_f1:
-            best_f1, best_thresh = f1t, thresh
-    return round(best_thresh, 2), best_f1
+        yp    = (y_prob >= thresh).astype(int)
+        score = matthews_corrcoef(y_true, yp)
+        if score > best_score:
+            best_score, best_thresh = score, thresh
+    return round(best_thresh, 2), best_score
 
 
 def detect_gpu():
@@ -325,21 +426,22 @@ class SaveBestParamsCallback:
 def make_xgb_objective(X_proc, y):
     """
     XGBoost için Optuna hedef fonksiyonu.
-    V7'nin ana odağı: L1 (reg_alpha), L2 (reg_lambda), max_depth ve scale_pos_weight parametreleridir.
-    V5'te yalnızca 100 deneme yapılmıştı; V7'de bu sayı 700'e çıkarıldı.
+    V9 odağı: L1 (reg_alpha), L2 (reg_lambda), max_depth ve scale_pos_weight.
+    Early Stopping (Rapor Bölüm 2.3): Her fold'da eval_set ile erken durdurma uygulanır.
     """
     def objective(trial):
         params = {
-            'n_estimators':     trial.suggest_int  ('n_estimators',     300, 1500, step=100),
-            'learning_rate':    trial.suggest_float ('learning_rate',    0.003, 0.15, log=True),
-            'max_depth':        trial.suggest_int   ('max_depth',        3, 10),
-            'subsample':        trial.suggest_float ('subsample',        0.50, 1.0),
-            'colsample_bytree': trial.suggest_float ('colsample_bytree', 0.40, 1.0),
-            'reg_alpha':        trial.suggest_float ('reg_alpha',        1e-8, 10.0, log=True),  # L1 düzenlileştirme
-            'reg_lambda':       trial.suggest_float ('reg_lambda',       1e-8, 10.0, log=True),  # L2 düzenlileştirme
-            'min_child_weight': trial.suggest_int   ('min_child_weight', 1, 20),
-            'scale_pos_weight': trial.suggest_float ('scale_pos_weight', 0.15, 0.60),
-            'gamma':            trial.suggest_float ('gamma',            0.0, 5.0),
+            'n_estimators':       trial.suggest_int  ('n_estimators',     300, 1500, step=100),
+            'learning_rate':      trial.suggest_float ('learning_rate',    0.003, 0.15, log=True),
+            'max_depth':          trial.suggest_int   ('max_depth',        3, 10),
+            'subsample':          trial.suggest_float ('subsample',        0.50, 1.0),
+            'colsample_bytree':   trial.suggest_float ('colsample_bytree', 0.40, 1.0),
+            'reg_alpha':          trial.suggest_float ('reg_alpha',        1e-8, 10.0, log=True),  # L1
+            'reg_lambda':         trial.suggest_float ('reg_lambda',       1e-8, 10.0, log=True),  # L2
+            'min_child_weight':   trial.suggest_int   ('min_child_weight', 1, 20),
+            'scale_pos_weight':   trial.suggest_float ('scale_pos_weight', 0.15, 0.60),
+            'gamma':              trial.suggest_float ('gamma',            0.0, 5.0),
+            'early_stopping_rounds': 50,   # Rapor Bölüm 2.3: Erken Durdurma mekanizması
             'random_state': RANDOM_STATE, 'verbosity': 0, 'n_jobs': -1,
             'eval_metric': 'logloss',
         }
@@ -351,7 +453,9 @@ def make_xgb_objective(X_proc, y):
         cv  = StratifiedKFold(n_splits=OPTUNA_CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
         mccs = []
         for tr, val in cv.split(X_proc, y):
-            clf.fit(X_proc[tr], y.iloc[tr])
+            clf.fit(X_proc[tr], y.iloc[tr],
+                    eval_set=[(X_proc[val], y.iloc[val])],
+                    verbose=False)
             prob = clf.predict_proba(X_proc[val])[:, 1]
             thresh, _ = find_best_threshold(y.iloc[val], prob)
             mccs.append(matthews_corrcoef(y.iloc[val], (prob >= thresh).astype(int)))
@@ -362,23 +466,23 @@ def make_xgb_objective(X_proc, y):
 def make_cat_objective(X_proc, y, scale_pw):
     """
     CatBoost için Optuna hedef fonksiyonu.
-    V5'te CatBoost hiç Optuna'ya girmemişti; V7'de ilk kez optimize edilmiştir.
-    L2 (l2_leaf_reg), depth ve scale_pos_weight parametreleri odaklanılan alanlardır.
+    V9: L2 (l2_leaf_reg), depth ve scale_pos_weight optimize edilir.
+    Early Stopping (Rapor Bölüm 2.3): Her fold'da eval_set ile erken durdurma uygulanır.
     """
     def objective(trial):
         if not CATBOOST_AVAILABLE:
             return 0.0
         params = {
-            'iterations':       trial.suggest_int  ('iterations',       300, 1000, step=100),
-            'learning_rate':    trial.suggest_float ('learning_rate',    0.003, 0.15, log=True),
-            'depth':            trial.suggest_int   ('depth',            4, 8),  # Aşırı öğrenmeyi ve yavaşlamayı önlemek amacıyla maksimum 8 olarak sınırlandırılmıştır
-            'l2_leaf_reg':      trial.suggest_float ('l2_leaf_reg',      1.0, 10.0),  # L2 düzenlileştirme
-            'scale_pos_weight': trial.suggest_float ('scale_pos_weight', 0.15, 0.60),
+            'iterations':          trial.suggest_int  ('iterations',       300, 1000, step=100),
+            'learning_rate':       trial.suggest_float ('learning_rate',    0.003, 0.15, log=True),
+            'depth':               trial.suggest_int   ('depth',            4, 8),
+            'l2_leaf_reg':         trial.suggest_float ('l2_leaf_reg',      1.0, 10.0),  # L2
+            'scale_pos_weight':    trial.suggest_float ('scale_pos_weight', 0.15, 0.60),
+            'early_stopping_rounds': 50,   # Rapor Bölüm 2.3: Erken Durdurma mekanizması
             'random_seed': RANDOM_STATE, 'verbose': 0, 'eval_metric': 'F1',
         }
-        
-        # CatBoost'ta Bayesian bootstrap tipi subsample parametresini desteklemediğinden,
-        # bootstrap türüne göre farklı parametreler kullanılmaktadır.
+
+        # CatBoost'ta Bayesian bootstrap subsample desteklemediğinden farklı parametreler.
         bootstrap_type = trial.suggest_categorical('bootstrap_type', ['Bayesian', 'Bernoulli'])
         params['bootstrap_type'] = bootstrap_type
         if bootstrap_type == 'Bernoulli':
@@ -393,7 +497,9 @@ def make_cat_objective(X_proc, y, scale_pw):
         cv  = StratifiedKFold(n_splits=OPTUNA_CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
         mccs = []
         for tr, val in cv.split(X_proc, y):
-            clf.fit(X_proc[tr], y.iloc[tr])
+            clf.fit(X_proc[tr], y.iloc[tr],
+                    eval_set=(X_proc[val], y.iloc[val]),
+                    verbose=False)
             prob = clf.predict_proba(X_proc[val])[:, 1]
             thresh, _ = find_best_threshold(y.iloc[val], prob)
             mccs.append(matthews_corrcoef(y.iloc[val], (prob >= thresh).astype(int)))
@@ -533,12 +639,20 @@ ek_cols  = [c for c in df.columns if c.startswith('EK_')]
 cat_cols = [c for c in df.columns if c.startswith('CAT_') and c != 'CAT_6']
 aa_cols  = ['AA_1', 'AA_2']
 
-# V3'ten gelen biyokimyasal özellikler (V5'te değişmeden korunmuştur)
+# V9: V6 seviyesine yükseltilmiş biyokimyasal özellikler (Grantham + BLOSUM62 dahil)
+# Rapor Tablo 3 ve Şekil 1 (SHAP) ile tam uyumludur.
 df = extract_aa_features(df)
 new_aa_num_cols = [
-    'AA1_polarity', 'AA1_charge', 'AA1_hydro', 'AA1_weight',
-    'AA2_polarity', 'AA2_charge', 'AA2_hydro', 'AA2_weight',
-    'AA_hydro_diff', 'AA_weight_diff', 'AA_charge_change', 'AA_polarity_change'
+    # AA1 özellikleri (8 özellik — V6 seviyesi)
+    'AA1_polarity', 'AA1_charge', 'AA1_hydropathy', 'AA1_weight',
+    'AA1_volume', 'AA1_flexibility', 'AA1_aromatic', 'AA1_blosum62',
+    # AA2 özellikleri (8 özellik — V6 seviyesi)
+    'AA2_polarity', 'AA2_charge', 'AA2_hydropathy', 'AA2_weight',
+    'AA2_volume', 'AA2_flexibility', 'AA2_aromatic', 'AA2_blosum62',
+    # Türetilmiş AA özellikleri (Grantham + BLOSUM + farklar — Rapor SHAP Şekil 1)
+    'AA_grantham_dist', 'AA_hydro_diff', 'AA_weight_diff', 'AA_volume_diff',
+    'AA_flex_diff', 'AA_charge_change', 'AA_polarity_change', 'AA_aromatic_change',
+    'AA_blosum_sum', 'AA_blosum_min',
 ]
 
 # V4'ten EK_ etkileşim terimleri (V5'te değişmeden korunmuştur)
@@ -552,14 +666,21 @@ missing_pattern_cols = [
     'missing_count_EK', 'missing_ratio_EK', 'missing_count_ALL', 'EK9_x_miss_AL'
 ]
 
-# V8'den gelen False Negative (FN) Risk özellikleri (YENİ!)
+# V8'den gelen False Negative (FN) Risk özellikleri
 df["EK7_low_flag"] = (df["EK_7"] < 3).astype(float)
 df["AA_missing_flag"] = (df["AA_1"].isna() | df["AA_2"].isna()).astype(float)
 df["FN_risk_flag"] = ((df["EK_7"] < 3) | df["AA_1"].isna() | df["AA_2"].isna()).astype(float)
 fn_risk_cols = ["EK7_low_flag", "AA_missing_flag", "FN_risk_flag"]
 
+# V9 YENİ: CAT_ etkileşim özellikleri (Rapor Bölüm 4.4 uyumu)
+cat_for_interaction = [c for c in cat_cols if c not in ('CAT_4', 'CAT_5')]
+df = add_cat_interaction_features(df, cat_for_interaction)
+cat_interaction_cols = [f'{a}_x_{b}' for a, b in combinations(cat_for_interaction, 2)
+                        if f'{a}_x_{b}' in df.columns]
+
 # Eksiklik oranı %80 ve üzeri olan sayısal sütunlar veri setinden çıkarılır (V5 ile aynı)
-all_num_base = al_cols + ek_cols + new_aa_num_cols + ek_interaction_cols + missing_pattern_cols + fn_risk_cols
+all_num_base = (al_cols + ek_cols + new_aa_num_cols + ek_interaction_cols
+                + missing_pattern_cols + fn_risk_cols + cat_interaction_cols)
 all_num_base = [c for c in all_num_base if c in df.columns]
 missing_ratio_series = df[all_num_base].isnull().mean()
 num_cols = missing_ratio_series[missing_ratio_series < MISSING_THRESH].index.tolist()
@@ -573,11 +694,12 @@ y = df['Label']
 pos_ratio = y.mean()
 scale_pw  = float(round((1 - pos_ratio) / pos_ratio, 4))
 
-print(f'  Biyokimyasal ozellikler : {len(new_aa_num_cols)} (V3ten)')
+print(f'  Biyokimyasal ozellikler : {len(new_aa_num_cols)} (V6 seviyesi — Grantham+BLOSUM dahil)')
 print(f'  EK_ etkilesim terimleri : {len(ek_interaction_cols)} (V4ten)')
 miss_pat_in_df = [c for c in missing_pattern_cols if c in df.columns]
 print(f'  Eksiklik oruntu ozellik : {len(miss_pat_in_df)} (V4ten)')
-print(f'  FN Risk ozellikleri     : {len(fn_risk_cols)} (V8den Yeni)')
+print(f'  FN Risk ozellikleri     : {len(fn_risk_cols)} (V8den)')
+print(f'  CAT etkilesim ozelligi  : {len(cat_interaction_cols)} (V9 Yeni — Rapor Bolum 4.4)')
 print(f'  Tutulan sayisal sutun   : {len(num_cols)}')
 print(f'  Kategorik sutun         : {len(cat_all)}')
 print(f'  MASTER boyutu           : {df.shape}')
@@ -867,6 +989,18 @@ for name, path in {k: v for k, v in PATHS.items() if k != 'MASTER'}.items():
     dfs = add_interaction_features(dfs, ek_cols)
     dfs = add_missing_pattern_features(dfs, al_cols, ek_cols)
 
+    # FN risk bayrakları (num_cols içinde yer alıyorsa eklenir)
+    if 'EK_7' in dfs.columns:
+        dfs['EK7_low_flag']  = (dfs['EK_7'] < 3).astype(float)
+        dfs['FN_risk_flag']  = ((dfs['EK_7'] < 3) | dfs['AA_1'].isna() | dfs['AA_2'].isna()).astype(float)
+    else:
+        dfs['EK7_low_flag']  = np.nan
+        dfs['FN_risk_flag']  = (dfs['AA_1'].isna() | dfs['AA_2'].isna()).astype(float)
+    dfs['AA_missing_flag'] = (dfs['AA_1'].isna() | dfs['AA_2'].isna()).astype(float)
+
+    # CAT_ etkileşim özellikleri (num_cols içinde yer alıyorsa eklenir)
+    dfs = add_cat_interaction_features(dfs, cat_for_interaction)
+
     # Alt grup veri setinde bulunmayan sütunlar NaN ile doldurulur
     Xs = pd.DataFrame(index=dfs.index)
     for c in num_cols + cat_all:
@@ -907,40 +1041,46 @@ print('ADIM 7 -- Versiyon Karsilastirmasi (MASTER F1 / MCC)')
 print(SEP2)
 
 history = [
-    ('V1',  'Baseline LGB+XGB',                   0.8711, 0.5054, 0.9207),
-    ('V2',  'Missing Indicator + Threshold',       0.8903, 0.5301, 0.9206),
-    ('V3',  'Biochem AA + Optuna + SHAP Top-100',  0.8929, 0.5401, None),
-    ('V4',  'CatBoost Stacking + EK Interact',     0.8958, 0.5434, 0.9199),
-    ('V5',  'GPU Stacking (100 trial Optuna)',      0.8941, 0.5370, 0.9222),
-    ('V6',  'Leak-Free + Grantham + LGBM Meta',    0.8919, 0.5450, 0.9116),
-    ('V7',  f'V5+Optuna{OPTUNA_TRIALS}t+{best_smote.upper()}', v7_f1, v7_mcc, v7_pr),
+    ('V1',  'Baseline LGB+XGB',                              0.8711, 0.5054, 0.9207),
+    ('V2',  'Missing Indicator + Threshold',                 0.8903, 0.5301, 0.9206),
+    ('V3',  'Biochem AA + Optuna + SHAP Top-100',            0.8929, 0.5401, None),
+    ('V4',  'CatBoost Stacking + EK Interact',               0.8958, 0.5434, 0.9199),
+    ('V5',  'GPU Stacking (100 trial Optuna)',                0.8941, 0.5370, 0.9222),
+    ('V6',  'Leak-Free + Grantham + LGBM Meta',              0.8919, 0.5450, 0.9116),
+    ('V7',  'V5 + Optuna 700/500t + SMOTE',                  0.8894, 0.5374, 0.9211),
+    ('V8',  'FN Otopsi + Risk Bayraklari',                   0.8941, 0.5370, 0.9222),
+    ('V9',  f'Grantham+BLOSUM+CAT_inter+MCC_esik+{best_smote.upper()}', v7_f1, v7_mcc, v7_pr),
 ]
 
-print(f'  {"Ver":<4} {"Model":<43} {"F1":>8} {"MCC":>8} {"PR-AUC":>8}')
-print(f'  {"-"*75}')
+print(f'  {"Ver":<4} {"Model":<52} {"F1":>8} {"MCC":>8} {"PR-AUC":>8}')
+print(f'  {"-"*84}')
 for ver, model, f1, mcc, pr in history:
     pr_str = f'{pr:.4f}' if pr else '  --  '
-    marker = ' <- V7' if ver == 'V7' else ''
-    print(f'  {ver:<4} {model:<43} {f1:>8.4f} {mcc:>8.4f} {pr_str:>8}{marker}')
+    marker = ' <- V9 (FINAL)' if ver == 'V9' else ''
+    print(f'  {ver:<4} {model:<52} {f1:>8.4f} {mcc:>8.4f} {pr_str:>8}{marker}')
 
 v5_f1, v5_mcc = 0.8941, 0.5370
 delta_f1  = v7_f1  - v5_f1
 delta_mcc = v7_mcc - v5_mcc
-print(f'\n  V7 - V5 Farki: dF1={delta_f1:+.4f}  dMCC={delta_mcc:+.4f}')
+print(f'\n  V9 - V5 Farki: dF1={delta_f1:+.4f}  dMCC={delta_mcc:+.4f}')
 if delta_f1 > 0 and delta_mcc > 0:
-    print('  V7, V5yi hem F1 hem MCCde gecti!')
+    print('  V9, V5yi hem F1 hem MCCde gecti! (Rapor hedefi basarild)')
 elif delta_f1 > 0 or delta_mcc > 0:
-    print('  V7 V5e kiyasla kismi iyilesme sagladi.')
+    print('  V9 V5e kiyasla kismi iyilesme sagladi.')
 else:
-    print('  V7 henuz V5i gecemedi. OPTUNA_TRIALS artir veya SMOTE yontemini degistir.')
+    print('  V9 henuz V5i gecemedi. OPTUNA_TRIALS artir veya SMOTE yontemini degistir.')
 
 # Tüm nihai sonuçlar JSON dosyasına kaydedilir
 final_results = {
-    'v7_f1':  v7_f1, 'v7_mcc': v7_mcc, 'v7_pr': v7_pr, 'v7_roc': v7_roc,
+    'v9_f1':  v7_f1, 'v9_mcc': v7_mcc, 'v9_pr': v7_pr, 'v9_roc': v7_roc,
     'best_thresh': float(final_thresh), 'best_smote': best_smote,
     'fn': int(cm[1, 0]), 'fp': int(cm[0, 1]),
     'delta_f1_vs_v5': float(delta_f1), 'delta_mcc_vs_v5': float(delta_mcc),
     'optuna_trials': OPTUNA_TRIALS, 'gpu': GPU_AVAILABLE,
+    'aa_feature_level': 'V6 (Grantham+BLOSUM62+volume+flexibility+aromatic)',
+    'threshold_metric': 'MCC',
+    'cat_interaction_features': len(cat_interaction_cols),
+    'early_stopping': True,
     'subgroup_results': {k: {mk: float(mv) for mk, mv in v.items()}
                          for k, v in subgroup_results.items()},
 }
@@ -949,6 +1089,6 @@ with open(RESULTS_FILE, 'w', encoding='utf-8') as f:
 print(f'\n  Tum sonuclar kaydedildi: {RESULTS_FILE}')
 
 print(f'\n{SEP}')
-print(f'  AlgoMed V7 tamamlandi!')
+print(f'  AlgoMed V9 tamamlandi! (Rapor uyumlu: Grantham+BLOSUM+CAT+MCC+EarlyStop)')
 print(f'  F1={v7_f1:.4f}  MCC={v7_mcc:.4f}  Esik={final_thresh}  SMOTE={best_smote.upper()}')
 print(SEP)
