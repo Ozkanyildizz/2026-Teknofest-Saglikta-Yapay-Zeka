@@ -43,7 +43,8 @@ algomed/
 │   ├── V9/                      # Projenin nihai üretim hattı (Leak-Free Custom CV, SMOTE)
 │   ├── V1 - V8/                 # Geliştirme, keşif ve Optuna hiperparametre optimizasyon aşamaları
 │   └── PROJE_GELISIM_RAPORU.md  # V1'den V9'a kadar adım adım alınan tüm mimari kararlar
-└── README.md                    # Proje kök dizin açıklaması
+├── README.md                    # Proje kök dizin açıklaması
+└── PSR Aşaması/                  # TEKNOFEST PSR raporunu başarılı bir şekilde geçtiğimiz çalışmaların bulunduğu dizin 
 ```
 
 ## ⚙️ Kurulum ve Çalıştırma
@@ -52,7 +53,7 @@ Projenin final kodları `PDR Aşaması/V9/` dizininde yer almaktadır.
 
 ```bash
 # Gerekli kütüphanelerin yüklenmesi
-pip install lightgbm xgboost catboost optuna imbalanced-learn scikit-learn pandas numpy
+pip install requirements.txt
 
 # Modelin eğitimi ve sızdırmaz CV döngüsünün başlatılması
 python "PDR Aşaması/V9/train.py"
@@ -61,4 +62,4 @@ python "PDR Aşaması/V9/train.py"
 *Not: Sistem GPU hızlandırmasını (CUDA) otomatik olarak algılar ve kullanır.*
 
 ---
-*Bu proje TEKNOFEST 2026 Sağlıkta Yapay Zeka yarışması PDR aşaması için geliştirilmiştir.*
+*Bu proje TEKNOFEST 2026 Sağlıkta Yapay Zeka yarışması PSR ve PDR aşaması için geliştirilmiştir.*
