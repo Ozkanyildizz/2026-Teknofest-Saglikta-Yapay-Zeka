@@ -1,73 +1,66 @@
-# V9 — Sızdırmaz Pipeline + FN Risk Özellikleri (Final Model)
+# V9 — AlgoMed Final PDR Modeli
 
-> **V7'DEN V9'A KLİNİK RİSK ODAKLI GEÇİŞ**
->
-> V7'deki yüksek performanslı sızdırmaz (leak-free) Stacking modelinin üzerine, Yalancı Negatif (FN) riskini klinik olarak tolere edilebilir seviyeye çekmek amacıyla hata analizi yapılmış ve **FN Risk Bayrakları** eklenmiştir.
+> **KLİNİK GÜVENLİK VE MATEMATİKSEL DENGEYE ULAŞIM**
 > 
-> *Not: V8 modeli, V7 üzerindeki salt özellik testlerinden ibaret olduğu için üretim hattında V9 olarak adlandırılmıştır.*
+> V9, projenin başından beri hedeflenen en yüksek genel ayrıştırma kapasitesine (**MCC=0.5594**) ulaşırken, aynı zamanda dinamik eşik optimizasyonuyla klinik olarak "hastayı kaçırmama" (FN minimization) stratejisini koruyan nihai PDR sürümüdür.
 
 ---
 
-## ✅ V9 Sonuçları (PDR Aşaması Final Modeli)
+## ✅ V9 Final Sonuçları (MASTER 5-Fold CV, SMOTE)
 
-> **V9, projenin başından beri en düşük FN (Hastalığı Kaçırma) oranına ulaşmıştır!**
-> Hedef, salt yüksek MCC değil; klinik olarak "güvenilir" bir çalışma noktası (Threshold=0.20) bulmaktır.
-
-### MASTER 5-Fold CV (Oversampling=SMOTE, Eşik=0.20)
-
-| Metrik | V7 | **V9** | Durum |
+| Metrik | Eski Sürüm (V8) | **V9 (Final)** | Durum / Yorum |
 |---|---|---|---|
-| **F1 Skoru** | 0.8959 | **0.8958** | Korundu |
-| **MCC** | 0.5532 | **0.5425** | Klinik güvenlik takası |
-| **FN (Kaçırılan Hasta)** | 101 | **64** | **-37 (Mükemmel Gelişme)** |
-| **FP (Yanlış Alarm)** | 375 | **421** | Tolere edilebilir |
+| **F1 Skoru** | 0.8941 | **0.8836** | Daha gerçekçi ve sağlam seviyeye oturdu |
+| **MCC** | 0.5370 | **0.5594** | **Çok Büyük Sıçrama** |
+| **PR-AUC** | 0.9222 | **0.9268** | Proje boyunca ulaşılan en yüksek seviye |
+| **ROC-AUC** | - | **0.8503** | - |
+| **Optimum Eşik** | 0.20 | **0.56** | Genel başarımı maksimize eden eşik noktası |
 
-### Alt Grup Sonuçları (V9)
+*(Not: Genel ayrıştırma kapasitesi 0.56 eşiğinde en üst düzeye çıkmaktadır. Ancak klinik uygulamada "yanlış negatif" (hastalık kaçırma) riskini minimize etmek için karar eşiği **0.20**'ye çekildiğinde, Recall ≥%92.7 sağlanmakta ve FN çok daha güvenli seviyelere inmektedir.)*
 
-| Grup | F1 | Eşik | Karakteristik Davranış |
-|---|---|---|---|
-| **CFTR** | **0.9613** | 0.20 | Varyasyon kalıpları son derece kararlı |
-| **KANSER** | **0.8874** | 0.20 | Kompleks gen yapısı nedeniyle dengeli F1 |
-| **PAH** | **0.9403** | 0.51 | Çok keskin dengesizlik (5:1), yüksek eşik optimizasyonu |
+---
 
-### Karmaşıklık Matrisi (MASTER - Threshold: 0.20)
+## 📊 Alt Grup Sonuçları (V9)
 
-```text
-                Tahmin
-                Benign  Patojenik
-Gerçek Benign     361       421 (FP)
-Gerçek Patojen     64 (FN) 2085
-```
-*FN=64 seviyesine indirilerek, klinik risk olan "hastayı eve gönderme" ihtimali projenin başından beri en düşük seviyeye çekilmiştir.*
+V9 modelinin KANSER, CFTR ve PAH gibi zorlayıcı alt gruplardaki başarısı:
+
+| Grup | F1 Skoru | MCC | PR-AUC | Eşik (Threshold) |
+|---|---|---|---|---|
+| **KANSER** | 0.9193 | **0.7169** | 0.9645 | 0.56 |
+| **CFTR** | 0.9257 | 0.6561 | 0.9878 | 0.56 |
+| **PAH** | 0.9348 | 0.5399 | 0.9487 | 0.46 |
+
+> Özellikle KANSER alt grubunda elde edilen 0.7169'luk MCC skoru, sistemin bu hastalığa özgü varyantları ne kadar başarılı izole ettiğinin kanıtıdır.
 
 ---
 
 ## 🚀 V9'daki Kritik Geliştirmeler
 
-### 1. FN Risk Bayrakları (Klinik Odaklı Feature Engineering)
-V8'deki kapsamlı analizler sonucunda, algoritmaların "benign" sandığı ama aslında patojenik olan vakalarda bazı biyolojik örüntüler keşfedildi. Modele şu bayraklar eklendi:
-* `EK7_low_flag`: EK_7 değerinin aşırı düşük olduğu durumlar.
-* `AA_missing_flag`: Amino asit dönüşüm verisinin bulunmadığı eksiklik durumları.
+### 1. Evrimsel ve Popülasyon Özellikleri
+V8'deki biyokimyasal özellik mühendisliğinin üzerine, **Grantham mesafesi** ve **BLOSUM62** skorları sisteme tam entegre edilmiştir. Ayrıca, popülasyon genetiği farklarını dengelemek için `CAT_` etkileşim öznitelikleri (Interaction features) modele dahil edilmiştir.
 
-### 2. Custom CV Loop (Sızdırmazlık - Leak Free)
-Tüm aşırı örnekleme (Oversampling) işlemleri, `implearn.pipeline` veya tüm veri setine uygulanmak yerine **Özel Kodlanmış (Custom) Cross-Validation Döngüsü** ile sadece ve sadece eğitim (Train) katmanlarına izole edildi. Model doğrulama (Validation) aşamasında hiçbir zaman sentetik veri (SMOTE) görmez. Sızdırmazlık %100 garanti altındadır.
+### 2. Optuna ile Yeniden Optimizasyon
+XGBoost ve CatBoost algoritmaları için GPU ivmeli, 500'er iterasyonluk ağır Bayesçi Optimizasyon (Optuna) süreçleri işletilmiştir. Bulunan en iyi parametreler, özellikle L1/L2 regülarizasyon bariyerlerini artırarak modelin ezberlemesini (overfitting) engellemiştir.
 
-### 3. ADASYN'den SMOTE'a Geçiş
-V7'de kullanılan ADASYN, Windows ortamlarında Python `multiprocessing` aşamasında "deadlock" (kilitlenme) yaratıyordu. V9'da aynı başarıyı çok daha stabil sağlayan standart **SMOTE (k_neighbors=5)** yöntemine geri dönüldü.
+### 3. Sızdırmazlık (Leak-Free) Garantisi
+Veri sızıntısını önlemek için 5-Katmanlı Tabakalı CV tamamen özel olarak (Custom Loop) kodlanmıştır. **SMOTE** ile sentetik veri üretimi sadece eğitim (Train) katmanlarına izole edilmiş, Validation katmanı asla sentetik veri görmeyecek şekilde tasarlanmıştır.
 
 ---
 
 ## 🛠 Model Mimarisi
 
 * **Temel Katman (Base Learners):**
-  * **XGBoost:** (GPU - cuda/hist) V7'den gelen 700-trial Optuna parametreleriyle sabitlendi.
-  * **LightGBM:** (GPU) V5'ten gelen optimum hiperparametrelerle.
-  * **CatBoost:** (GPU) V7'den gelen 500-trial Optuna parametreleriyle.
-* **Meta Model:** `LogisticRegression(C=0.1)` kullanılarak Stacking Ensemble (Yığınsal Topluluk) yapısı kuruldu.
-* **Karar Eşiği (Threshold):** `0.50` yerine, maliyet-duyarlı optimizasyonla `0.20` olarak ayarlandı.
+  * **XGBoost:** (GPU - cuda/hist) 500-trial Optuna sonuçlarıyla.
+  * **CatBoost:** (GPU) 500-trial Optuna sonuçlarıyla.
+  * **LightGBM:** (GPU - histogram) V5 bazlı sağlam parametrelerle.
+* **Meta Model:** `LogisticRegression` tabanlı Stacking Classifier (Yığınsal Topluluk).
+* **Aşırı Örnekleme (Oversampling):** Sızdırmaz CV döngüsü içerisinde çalışan `SMOTE`.
 
-## 📁 Dosya Yapısı
+---
 
-* `train.py`: V9 modelinin GPU üzerinde Custom CV ve SMOTE ile baştan sona eğitildiği ana dosya.
-* `v9_optuna_results.json`: Optuna tarafından bulunmuş ve modelin direkt kullandığı en iyi hiperparametreler.
-* `README.md`: Bu doküman.
+## 📁 Klasör Yapısı
+
+* `train.py`: V9 modelinin baştan sona veri işleme, SMOTE, Stacking ve CV süreçleriyle eğitildiği ana dosya.
+* `optuna_study.py`: Hiperparametre optimizasyonu için kullanılan script.
+* `v9_optuna_results.json`: Optuna tarafından bulunan final parametreleri.
+* `v9_outputs.txt`: Tüm Fold ve alt grup (KANSER, PAH, vb.) metriklerinin konsol çıktısı.
