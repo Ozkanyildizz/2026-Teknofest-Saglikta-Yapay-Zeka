@@ -1,0 +1,201 @@
+=================================================================
+  AlgoMed V9 -- Sizdirmaz Pipeline + FN Risk Ozellikleri (V8)
+  V7 Mimarisinin Uzerine:
+  Optuna 500 trial (L1/L2/depth/scale_pos_weight)
+  + SMOTE/ADASYN/BorderlineSMOTE Sizdirmaz Pipeline
+  + V8 FN Risk Bayraklari
+=================================================================
+  GPU      : Aktif
+  Optuna   : CALISACAK (500 trial)
+  imblearn : Kurulu
+
+--------------------------------------------------
+ADIM 1 -- Veri Yukleme ve Ozellik Cikarimi (V5 mimarisi)
+--------------------------------------------------
+  Biyokimyasal ozellikler : 26 (V6 seviyesi — Grantham+BLOSUM dahil)
+  EK_ etkilesim terimleri : 36 (V4ten)
+  Eksiklik oruntu ozellik : 7 (V4ten)
+  FN Risk ozellikleri     : 3 (V8den)
+  CAT etkilesim ozelligi  : 3 (V9 Yeni — Rapor Bolum 4.4)
+  Tutulan sayisal sutun   : 400
+  Kategorik sutun         : 5
+  MASTER boyutu           : (2931, 428)
+  Patojenik orani         : 73.32% | scale_pos_weight: 0.3639
+
+--------------------------------------------------
+ADIM 2 -- Optuna Optimizasyonu (500 trial)
+  Odak: L1/L2 regularizasyon + max_depth + scale_pos_weight
+--------------------------------------------------
+  Optuna icin gecici on isleme...
+  Optuna X boyutu: (2931, 739)
+
+  [XGBoost] 500 trial basliyor (GPU: True)...
+  0%|                                                                                                                                                  | 0/500 [00:00<?, ?it/s]
+  [YENİ EN İYİ XGB] MCC: 0.5385 (Parametreler JSON'a kaydedildi)
+Best trial: 0. Best value: 0.538511:   0%|▍                                                                                                    | 2/500 [00:02<10:11,  1.23s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5447 (Parametreler JSON'a kaydedildi)
+Best trial: 2. Best value: 0.544695:   2%|██▍                                                                                                 | 12/500 [00:39<32:25,  3.99s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5493 (Parametreler JSON'a kaydedildi)
+Best trial: 12. Best value: 0.549331:   3%|██▉                                                                                                | 15/500 [00:55<39:01,  4.83s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5580 (Parametreler JSON'a kaydedildi)
+Best trial: 15. Best value: 0.557959:   4%|████▏                                                                                              | 21/500 [01:26<39:40,  4.97s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5673 (Parametreler JSON'a kaydedildi)
+Best trial: 21. Best value: 0.567265:  32%|███████████████████████████████▊                                                                  | 162/500 [07:58<14:37,  2.60s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5677 (Parametreler JSON'a kaydedildi)
+Best trial: 162. Best value: 0.567724:  38%|████████████████████████████████████▍                                                            | 188/500 [09:00<14:32,  2.80s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5687 (Parametreler JSON'a kaydedildi)
+Best trial: 188. Best value: 0.568702:  40%|██████████████████████████████████████▉                                                          | 201/500 [09:34<13:54,  2.79s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5713 (Parametreler JSON'a kaydedildi)
+Best trial: 201. Best value: 0.571339:  43%|█████████████████████████████████████████▎                                                       | 213/500 [10:10<14:20,  3.00s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5730 (Parametreler JSON'a kaydedildi)
+Best trial: 213. Best value: 0.57301:  58%|█████████████████████████████████████████████████████████▏                                        | 292/500 [14:18<10:42,  3.09s/it]
+  [YENİ EN İYİ XGB] MCC: 0.5740 (Parametreler JSON'a kaydedildi)
+Best trial: 292. Best value: 0.573957: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████| 500/500 [25:27<00:00,  3.05s/it]
+  XGBoost Optuna tamamlandi: 25.5 dakika
+  En iyi MCC (3-fold): 0.5740
+  En iyi XGB parametreler:
+    n_estimators: 500
+    learning_rate: 0.015843457444205143
+    max_depth: 6
+    subsample: 0.9144985537029409
+    colsample_bytree: 0.43982095758913214
+    reg_alpha: 0.000467826169501485
+    reg_lambda: 7.929052826573481e-05
+    min_child_weight: 1
+    scale_pos_weight: 0.5127668456227138
+    gamma: 1.3972598319824807
+
+  [CatBoost] 500 trial basliyor...
+  0%|                                                                                                                                                  | 0/500 [00:00<?, ?it/s]
+  [YENİ EN İYİ CAT] MCC: 0.4832 (Parametreler JSON'a kaydedildi)
+Best trial: 0. Best value: 0.483235:   0%|▏                                                                                                  | 1/500 [00:35<4:57:45, 35.80s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5741 (Parametreler JSON'a kaydedildi)
+Best trial: 1. Best value: 0.574142:   1%|▌                                                                                                  | 3/500 [01:02<2:34:16, 18.62s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5760 (Parametreler JSON'a kaydedildi)
+Best trial: 3. Best value: 0.576016:   2%|█▊                                                                                                 | 9/500 [02:12<2:04:29, 15.21s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5805 (Parametreler JSON'a kaydedildi)
+Best trial: 9. Best value: 0.580529:   5%|████▋                                                                                             | 24/500 [05:45<2:50:15, 21.46s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5809 (Parametreler JSON'a kaydedildi)
+Best trial: 24. Best value: 0.58087:  15%|██████████████▋                                                                                   | 75/500 [17:20<2:09:44, 18.32s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5857 (Parametreler JSON'a kaydedildi)
+Best trial: 75. Best value: 0.58568:  58%|████████████████████████████████████████████████████████▋                                        | 292/500 [1:05:08<44:51, 12.94s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5857 (Parametreler JSON'a kaydedildi)
+Best trial: 292. Best value: 0.585697:  61%|█████████████████████████████████████████████████████████▊                                     | 304/500 [1:08:19<50:54, 15.58s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5908 (Parametreler JSON'a kaydedildi)
+Best trial: 304. Best value: 0.590822:  95%|██████████████████████████████████████████████████████████████████████████████████████████     | 474/500 [1:45:15<03:13,  7.42s/it]
+  [YENİ EN İYİ CAT] MCC: 0.5915 (Parametreler JSON'a kaydedildi)
+Best trial: 474. Best value: 0.591539: 100%|███████████████████████████████████████████████████████████████████████████████████████████████| 500/500 [1:50:26<00:00, 13.25s/it]
+  CatBoost Optuna tamamlandi: 110.4 dakika
+  En iyi MCC (3-fold): 0.5915
+  En iyi CAT parametreler:
+    iterations: 1000
+    learning_rate: 0.08400976370529122
+    depth: 7
+    l2_leaf_reg: 7.535394593498418
+    scale_pos_weight: 0.5770072373051212
+    bootstrap_type: Bernoulli
+    subsample: 0.7119846758375696
+
+  Optuna sonuclari kaydedildi: C:\Users\pc\Desktop\yapay zeka\V9\v9_optuna_results.json
+
+--------------------------------------------------
+ADIM 3 -- Sizdirmaz SMOTE Pipeline + V5 Stacking CV
+  KRITIK: SMOTE SADECE her foldin TRAIN kismina uygulanir!
+  KRITIK: VAL seti orijinal kalir -- sentetik veri GORMEZ!
+--------------------------------------------------
+
+  Tum oversampling yontemleri karsilastiriliyor...
+
+  ---------------------------------------------
+  Test: SMOTE
+
+  [SMOTE=SMOTE] Sizdirmaz 5-Fold CV basliyor...
+  Fold    Train_once Train_sonra    Val       F1      MCC
+  -------------------------------------------------------
+  Fold 1          2,344       3,438    587   0.5566   0.5566
+  Fold 2          2,345       3,438    586   0.5785   0.5785
+  Fold 3          2,345       3,438    586   0.5563   0.5563
+  Fold 4          2,345       3,438    586   0.6025   0.6025
+  Fold 5          2,345       3,440    586   0.5398   0.5398
+  -------------------------------------------------------
+  Ortalama                              0.5667   0.5667
+  SMOTE -> F1:0.8836  MCC:0.5594  PR-AUC:0.9268  (32.7 dk)
+
+  KAZANAN: SMOTE (MCC=0.5594)
+
+--------------------------------------------------
+ADIM 4 -- Sonuclar ve Degerlendirme
+--------------------------------------------------
+
+  MASTER 5-Fold CV Sonuclari (SMOTE=SMOTE, Esik=0.56):
+  Metrik                    Deger
+  --------------------------------
+  F1 Skoru                 0.8836
+  MCC                      0.5594
+  PR-AUC                   0.9268
+  ROC-AUC                  0.8503
+
+  Confusion Matrix:
+                  Tahmin
+                  Benign  Patojenik
+  Gercek Benign     523        259
+  Gercek Patojen    243       1906
+
+  FN=243  FP=259
+
+  Esik Analizi:
+    Esik  Precision   Recall       F1      MCC
+    0.25     0.8513   0.9269   0.8875   0.5313
+    0.30     0.8565   0.9190   0.8866   0.5353
+    0.35     0.8594   0.9102   0.8841   0.5319
+    0.40     0.8637   0.9055   0.8841   0.5380
+    0.45     0.8672   0.9023   0.8844   0.5433
+    0.50     0.8700   0.8967   0.8831   0.5439
+    0.55     0.8788   0.8874   0.8831   0.5559
+    0.60     0.8835   0.8790   0.8813   0.5581
+    0.65     0.8865   0.8651   0.8756   0.5496
+
+--------------------------------------------------
+ADIM 5 -- Oversampling Karsilastirmasi
+--------------------------------------------------
+  Yontem                 F1      MCC   PR-AUC  ROC-AUC  Sure (dk)
+  --------------------------------------------------------------
+  SMOTE              0.8836   0.5594   0.9268   0.8503       32.7 <- KAZANAN
+
+--------------------------------------------------
+ADIM 6 -- Alt Grup Degerlendirmesi (KANSER / PAH / CFTR)
+  Model tum MASTER verisiyle egitilip alt gruplara uygulanıyor...
+--------------------------------------------------
+  [KANSER] F1:0.9193  MCC:0.7169  PR-AUC:0.9645  ROC-AUC:0.9339  (esik=0.56)
+
+  [PAH Esik Analizi] Optimal F1 esigi: 0.46
+    Esik=0.36 -> F1:0.9352  MCC:0.5340
+    Esik=0.46 -> F1:0.9348  MCC:0.5399
+    Esik=0.51 -> F1:0.9331  MCC:0.5298
+  [PAH] F1:0.9348  MCC:0.5399  PR-AUC:0.9487  ROC-AUC:0.8273  (esik=0.46)
+  [CFTR] F1:0.9257  MCC:0.6561  PR-AUC:0.9878  ROC-AUC:0.9471  (esik=0.56)
+
+--------------------------------------------------
+ADIM 7 -- Versiyon Karsilastirmasi (MASTER F1 / MCC)
+--------------------------------------------------
+  Ver  Model                                                      F1      MCC   PR-AUC
+  ------------------------------------------------------------------------------------
+  V1   Baseline LGB+XGB                                       0.8711   0.5054   0.9207
+  V2   Missing Indicator + Threshold                          0.8903   0.5301   0.9206
+  V3   Biochem AA + Optuna + SHAP Top-100                     0.8929   0.5401     --  
+  V4   CatBoost Stacking + EK Interact                        0.8958   0.5434   0.9199
+  V5   GPU Stacking (100 trial Optuna)                        0.8941   0.5370   0.9222
+  V6   Leak-Free + Grantham + LGBM Meta                       0.8919   0.5450   0.9116
+  V7   V5 + Optuna 700/500t + SMOTE                           0.8894   0.5374   0.9211
+  V8   FN Otopsi + Risk Bayraklari                            0.8941   0.5370   0.9222
+  V9   Grantham+BLOSUM+CAT_inter+MCC_esik+SMOTE               0.8836   0.5594   0.9268 <- V9 (FINAL)
+
+  V9 - V5 Farki: dF1=-0.0105  dMCC=+0.0224
+  V9 V5e kiyasla kismi iyilesme sagladi.
+
+  Tum sonuclar kaydedildi: C:\Users\pc\Desktop\yapay zeka\V9\v9_optuna_results.json
+
+=================================================================
+  AlgoMed V9 tamamlandi! (Rapor uyumlu: Grantham+BLOSUM+CAT+MCC+EarlyStop)
+  F1=0.8836  MCC=0.5594  Esik=0.56  SMOTE=SMOTE
+=================================================================

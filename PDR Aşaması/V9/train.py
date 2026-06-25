@@ -981,6 +981,19 @@ except Exception:
 stack_final = build_v5_stack(final_lgb_params, final_xgb_params, final_cat_params)
 stack_final.fit(X_full_res, y_full_res)
 
+# Modeli ve Ön İşleyiciyi diske kaydetme
+try:
+    import joblib
+    model_path = os.path.join(V9_DIR, 'v9_final_model.joblib')
+    prep_path  = os.path.join(V9_DIR, 'v9_preprocessor.joblib')
+    joblib.dump(stack_final, model_path)
+    joblib.dump(prep_final, prep_path)
+    print(f'\n  [KAYIT] Final model ve preprocessor basariyla kaydedildi:')
+    print(f'    Model: {model_path}')
+    print(f'    Preprocessor: {prep_path}')
+except Exception as e:
+    print(f'\n  Model kaydetme sirasinda hata: {e}')
+
 subgroup_results = {}
 for name, path in {k: v for k, v in PATHS.items() if k != 'MASTER'}.items():
     dfs = pd.read_csv(path)
