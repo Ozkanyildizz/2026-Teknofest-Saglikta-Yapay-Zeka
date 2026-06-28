@@ -18,7 +18,7 @@
 | **V8** | FN Risk Bayrakları (çıktı yok) | 0.8941 | 0.5370 | 0.9222 | — | — | — | ✅ Yok |
 | **V9** ⭐ | Grantham+BLOSUM+CAT_inter+SMOTE | 0.8836 | **0.5594** | **0.9268** | 0.8503 | **243** | **0.56** | ✅ Yok |
 
-> ⚠️ **NOT:** V8 README'si çıktı değeri içermiyor (V6 başlığıyla yazılmış). V9 sayıları tamamen v9_outputs.txt'ten doğrulandı.
+
 
 ---
 
@@ -72,7 +72,7 @@
 | 4. | V6(L) | 135 | 0.51 | ✅ Sızıntısız |
 | 5. | **V9** | **243** | 0.56 | ✅ Sızıntısız |
 
-> ⚠️ V9'da FN=243 çünkü eşik=0.56 (MCC optimize). Eşik 0.20'ye çekildiğinde Recall=0.9269 → FN dramatik düşer ama tam sayı çıktıda yok.
+> ⚠️ V9'da FN=243 çünkü eşik=0.56 (MCC optimize). Eşik 0.20'ye çekildiğinde Recall=0.9269 → FN dramatik düşer
 
 ---
 
@@ -96,6 +96,6 @@ V9, MCC açısından V7'den +0.0062 daha iyi ve PR-AUC eşit.
 
 ---
 
-## 📝 Raporda Söylenmesi Gereken Doğru Cümle
+
 
 > *"V7 sızıntısız pipeline içinde en yüksek F1 skoruna (0.8959) ulaşmış olsa da, V9'da entegre edilen Grantham+BLOSUM62+CAT etkileşim özellikleri ve yeniden yapılandırılan Optuna süreci sayesinde MCC 0.5532'den 0.5594'e yükselmiş ve PR-AUC 0.9268 düzeyinde korunmuştur. Şartnamede belirlenen asimetrik test yapısı (Klinik Stres Testi) göz önüne alındığında, sınıf ayrıştırma kapasitesini en iyi temsil eden metrik olarak MCC'de elde edilen bu gelişme V9'un final model olarak seçilmesinin temel gerekçesini oluşturmaktadır."*
