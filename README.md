@@ -11,26 +11,27 @@ Genomik varyant verilerindeki en büyük iki engel **yüksek eksik değer oranla
 AlgoMed sistemi bu sorunu salt bir makine öğrenmesi metrik maksimizasyonu olarak değil, bir **"Klinik Risk Yönetimi"** problemi olarak ele alır.
 
 ### Öne Çıkan Özellikler (AlgoMed V9 Mimarisi)
-1. **Klinik Güvenlik (Maliyet-Duyarlı Karar Eşiği):** Standart 0.50 eşiği yerine, algoritmik Kesinlik-Duyarlılık dengesi kurularak eşik **0.20**'ye çekilmiştir. Bu dinamik yaklaşım sayesinde klinik hata olan FN (Hastayı Kaçırma) oranı proje başından beri en düşük seviye olan **64**'e indirilmiştir.
+1. **Klinik Güvenlik (Maliyet-Duyarlı Karar Eşiği):** Standart 0.50 eşiği terk edilerek klinik stres testine (%86 Benign) uygun olarak MCC optimizasyonu ile eşik 0.56'da, **Klinik Güvenlik** için ise eşik **0.25**'e çekilmiştir. Bu dinamik yaklaşım sayesinde klinik hata olan FN (Hastayı Kaçırma) riski minimize edilmiştir (Eşik=0.25 için Recall %92.7).
 2. **Sızdırmaz Boru Hattı (Leak-Free Custom CV):** Tüm aşırı örnekleme (SMOTE) ve ön işleme adımları, özel yazılmış Cross-Validation döngüsüyle sadece eğitim setine izole edilmiş, modelin test ortamındaki genellenebilirliği %100 garanti altına alınmıştır.
-3. **Biyokimyasal Özellik Mühendisliği:** Amino asitlerin moleküler ağırlık, polarite, hidrofobisite farkları ve Grantham mesafeleri gibi evrimsel metrikleri modele "domain-expertise" olarak dahil edilmiştir.
+3. **Biyokimyasal Özellik Mühendisliği:** Amino asitlerin moleküler ağırlık, polarite, hidrofobisite farkları ve evrimsel (Grantham, BLOSUM62) metrikleri modele "domain-expertise" olarak dahil edilmiştir.
 4. **Hibrit Stacking Mimarisi:** XGBoost, LightGBM ve CatBoost algoritmalarının OOF (Out-of-Fold) tahminleri Lojistik Regresyon meta-modeli ile birleştirilerek yüksek boyutlu verideki kararlılık maksimize edilmiştir.
 
 ---
 
 ## 📊 Final Performans Sonuçları (V9)
 
-*Klinik risk önceliklendirildiği için F1/MCC maksimizasyonu yerine False Negative (FN) minimizasyonuna gidilmiştir.*
+*Yarışma kapsamındaki asimetrik test setine ("Klinik Stres Testi") uygun olarak genel ayrıştırma gücü için MCC maksimizasyonu hedeflenmiş, klinik güvenlik için ise FN minimizasyonuna gidilmiştir.*
 
-- **MASTER F1 Skoru:** %89.58
-- **MASTER MCC:** 0.5425
-- **False Negative (FN):** 64 (Mükemmel Gelişme)
-- **Kullanılan Threshold:** 0.20
+- **MASTER F1 Skoru:** 0.8836
+- **MASTER MCC:** 0.5594 (Proje İçi En Yüksek MCC)
+- **MASTER PR-AUC:** 0.9268
+- **Yanlış Negatif (FN):** 243 (Eşik=0.56) / Klinik Güvenlikte Çok Daha Düşük
+- **Kullanılan Threshold (Karar Eşiği):** 0.56 (Genel MCC) / 0.25 (Klinik Güvenlik - Recall: %92.7)
 
-### Alt Grup Başarıları (F1)
-- **CFTR Grubu:** %96.13
-- **PAH Grubu:** %94.03
-- **KANSER Grubu:** %88.74
+### Alt Grup Başarıları (MCC)
+- **KANSER Grubu:** 0.7169
+- **CFTR Grubu:** 0.6561
+- **PAH Grubu:** 0.5399
 
 ---
 
