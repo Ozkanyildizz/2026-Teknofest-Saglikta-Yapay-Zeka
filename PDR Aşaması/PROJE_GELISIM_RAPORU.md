@@ -39,22 +39,6 @@ Bu belge, TEKNOFEST 2026 Sağlıkta Yapay Zeka yarışması PDR (Proje Tasarım 
 * **Ne Yaptık?** Modelin kaçırdığı (Yanlış Negatif / FN) vakaların neden kaçırıldığını tek tek inceledik. Amino asit verisinin eksik olmasının ve "EK_7" biyolojik değerinin çok düşük olmasının (EK_7 < 3) modeli yanılttığını (hastayı eve gönderdiğini) bulduk.
 * **Neden Yaptık?** Amacımız skoru sadece kağıt üzerinde yükseltmekten çok tıbbi bir gerçekliği çözmekti. En ölümcül hata türü olan FN'in (False Negative) karakteristiğini çıkartmak için "hata yapmanın örüntüsünü" teşhis ettik.
 
-### V9: FN Risk Bayrakları Entegrasyonu (Nihai ve En Güvenli Model)
-* **Ne Yaptık?** V8'de keşfettiğimiz klinik zafiyetleri gidermek için "FN Risk Flag" adında biyolojik kurallar oluşturduk (`EK7_low_flag`, `AA_missing_flag`) ve bunları V7'nin güçlü sızdırmaz mimarisine gömdük.
-* **Neden Yaptık?** Yanlış Negatif (FN) sayısını radikal şekilde düşürmek istedik. Bu hamleyle FN sayısını **101'den 64'e indirmeyi** başardık. Fazladan **37 kritik hastanın hayatını kurtaran**, klinik açıdan en güvenilir yapay zeka sistemimizi oluşturduk.
-
----
-
-## 2. PDR Raporunda Jüriyi Etkileyecek 3 Ana Argüman (Kozlarımız)
-
-**🛡️ Overfitting (Aşırı Öğrenme) Koruması:**
-* "Modelimiz test verilerini ezberlemedi." Stacking modelini eğitirken uyguladığımız **5-Fold Out-of-fold (OOF)** yöntemi sayesinde meta-modelimiz sadece temel modellerin daha önce *hiç görmediği* veriler üzerindeki performansına bakarak karar veriyor. Bu nedenle modelimiz gerçek dünyada (final testinde) asla çuvallamayacak.
-
-**⚕️ Yüksek F1 ve Kanser Başarısı (%90+):**
-* Veri son derece imbalanced (dengesiz) ve boşluklarla dolu olmasına rağmen genel MASTER'da **0.8958 F1** (%92.5 PR-AUC), CFTR özel grubunda ise **0.9613 F1** (%98.6 PR-AUC) seviyesine ulaştık. Accuracy (Doğruluk) gibi yanıltıcı metrikler yerine tıbbın altın standardı olan MCC (0.5425) ve F1 metriklerini optimize ettik.
-
-**🧬 Domain Expertise (Alan Bilgisi) ve False Negative Bilinci:**
-* Modeli kurup geçmedik; eksikliklerin tıbbi anlamını (Missing Indicators) çıkarttık, mutasyonların biyokimyasal tahribatlarını (Grantham matrisi, polarite, yük) yapay zekaya tercüme ettik. En kritik başarı olarak modelin "hata yaptığı kör noktaları" analiz edip (EK_7 düşüklüğü ve AA eksikliği) **FN Risk Bayrakları** üreterek False Negative vakalarını 101'den 64'e indirdik. PAH ve CFTR varyantlarında da hastalığa özel eşik (Threshold) stratejileri uyguladık.
-
----
-*Not: Bu belge PDR ve PSR raporları yazılırken "Neyi neden yaptık?" sorularına ile yanıt vermek üzere referans olarak oluşturulmuştur.*
+### V9(L): Nihai Hibrit Karar Destek Sistemi ve Klinik Stres Testi Başarısı (FINAL MODEL)
+* **Ne Yaptık?** Grantham mesafe matrisine ek olarak BLOSUM62 evrimsel şiddet matrisini ve popülasyon (CAT_) etkileşim özelliklerini sızıntısız (leak-free) pipeline içerisinde birleştirdik. Karar eşiğini tıbbi güvenlik için 0.25'e sabitledik.
+* **Neden Yaptık?** Biyolojik evrimin varyantlar üzerindeki etkisini matematiksel olarak (Grantham+BLOSUM62) modelledik. Test setinin %86 oranında asimetrik (Benign ağırlıklı) olacağı ("Klinik Stres Testi") bilindiğinden, modelin ayrıştırma gücünü ölçen MCC metriğine odaklandık ve V9 ile projenin rekor MCC değerine (0.5594) ulaştık. 0.25 klinik eşik stratejisiyle de en tehlikeli hata olan Yanlış Negatif (FN) oranını en aza indirdik. V9, sadece algoritmik bir model değil, tıp bilimiyle veri biliminin kusursuz bir hibritidir.

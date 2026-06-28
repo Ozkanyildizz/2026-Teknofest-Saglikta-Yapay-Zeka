@@ -43,7 +43,13 @@ PDR Aşaması/
 ├── V6(L)/                           ← 6. versiyon (Sızıntısız CV + Derin AA)
 │   ├── train.py, README.md
 │   └── F1: 0.8919, MCC: 0.5450 (Gerçekçi Skor)
-└── ...
+├── V7/                              ← 7. versiyon (Sızıntısız SMOTE + GPU Optuna)
+│   └── F1: 0.8959, MCC: 0.5532
+├── V8/                              ← 8. versiyon (FN Risk Bayrakları)
+│   └── F1: 0.8941, MCC: 0.5370
+└── V9(L)/                           ← 9. versiyon (Nihai Model: Grantham+BLOSUM62)
+    ├── train.py, README.md
+    └── F1: 0.8836, MCC: 0.5594, PR-AUC: 0.9268
 ```
 
 ---
@@ -255,7 +261,10 @@ Bu tablo, yeni bir versiyon tamamlandıkça güncellenecektir:
 | **V3** | - | Mayıs 2026 | LGB + XGB (2-lü) | 0.8929 | 0.5401 | — | + Amino Asit Bio. + Optuna | ✅ |
 | **V4** | - | Mayıs 2026 | LGB+XGB+CatBoost | 0.8958 | 0.5434 | 0.9199 | + CatBoost Stacking + EK_ Interact | ✅ |
 | **V5** | - | Mayıs 2026 | LGB+XGB+CatBoost | 0.8941 | 0.5370 | 0.9222 | **Tam GPU Desteği**, XGB Optuna, KANSER F1: 0.9069 | ✅ |
-| **V6(L)** ⭐| Özkan | Haziran 2026 | LGB+XGB+CatBoost | **0.8919** | **0.5450** | **0.9116** | **Sızıntısız CV**, Tam Grantham, SHAP | ✅ |
+| **V6(L)** | Özkan | Haziran 2026 | LGB+XGB+CatBoost | 0.8919 | 0.5450 | 0.9116 | **Sızıntısız CV**, Tam Grantham, SHAP | ✅ |
+| **V7** | - | Haziran 2026 | LGB+XGB+CatBoost | 0.8959 | 0.5532 | 0.9268 | Sızıntısız SMOTE + GPU Optuna | ✅ |
+| **V8** | - | Haziran 2026 | LGB+XGB+CatBoost | 0.8941 | 0.5370 | 0.9222 | FN Risk Bayrakları | ✅ |
+| **V9(L)** ⭐| Özkan | Haziran 2026 | LGB+XGB+CatBoost | **0.8836** | **0.5594** | **0.9268** | **Nihai Model:** Grantham + BLOSUM62 + Eşik(0.25) | ✅ |
 
 > ✅ = Push edildi | 🔄 = Beklemede | — = Henüz belirlenmedi
 
